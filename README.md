@@ -9,6 +9,7 @@ A typing practice program written in C using SDL2. Visually inspired by projects
 ### Building and running
 
 **Dependencies**
+
 cmake
 sdl2
 sdl2\_ttf

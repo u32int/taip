@@ -10,10 +10,10 @@ A typing practice program written in C using SDL2. Visually inspired by projects
 
 **Dependencies**
 
-cmake
-sdl2
-sdl2\_ttf
-sdl2\_gfx
+- cmake
+- sdl2
+- sdl2\_ttf
+- sdl2\_gfx
 
 To build the project, use the following commands.
 

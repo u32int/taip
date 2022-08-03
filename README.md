@@ -2,6 +2,10 @@
 
 A typing practice program written in C using SDL2. Visually inspired by projects like [monkeytype](https://github.com/monkeytypegame/monkeytype). It aims to be minimal on resources and unlike most modern typing programs be a desktop first application, usable without access to the internet.
 
+<img title="" src="img/preview1.png" alt="">
+
+<img title="" src="img/preview2.png" alt="">
+
 ### Building and running
 
 **Dependencies**
@@ -9,8 +13,6 @@ cmake
 sdl2
 sdl2\_ttf
 sdl2\_gfx
-
-
 
 To build the project, use the following commands.
 

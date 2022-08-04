@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.18)
-project(stps)
+project(taip)
 
 INCLUDE(FindPkgConfig)
 
@@ -26,5 +26,5 @@ set(HEADERS
   colors.h
 )
 
-add_executable(main ${SRCS} ${HEADERS})
-target_link_libraries(main ${SDL2_LIBRARIES} ${SDL2TTF_LIBRARIES} ${SDL2GFX_LIBRARIES})
+add_executable(taip ${SRCS} ${HEADERS})
+target_link_libraries(taip ${SDL2_LIBRARIES} ${SDL2TTF_LIBRARIES} ${SDL2GFX_LIBRARIES})

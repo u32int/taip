@@ -7,6 +7,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define VERSION "0.1"
+
 #define SCR_WIDTH  1280
 #define SCR_HEIGHT 720
 #define TEXT_LINES 3

@@ -15,11 +15,13 @@
 #include <SDL2/SDL_video.h>
 #include <math.h>
 #include <stdio.h>
-#include "time.h"
+#include <stdlib.h>
+#include <string.h> 
+#include <time.h>
+#include <getopt.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-#include <string.h> 
 
 #include "game.h"
 #include "render.h"
@@ -27,14 +29,64 @@
 
 #define WINDOW_NAME "taip"
 
+void print_info_stdout()
+{
+  fprintf(stdout,
+"taip v%s\n\
+This application is free software, distributed under the MIT license.\n\
+",
+          VERSION);
+}
+
+void print_help_stdout()
+{
+  fputs("usage: taip [OPTION]\n\n\
+Options:\n\
+  -h, --help      print this message\n\
+  -v, --version   print version and related information\n\
+",
+        stdout);
+}
+
 void parse_args(int argc, char **argv, game_t *game)
 {
-    /* TODO add useful options and parse them (ex. setting timer seconds etc.) */
+    /* using getopt, for more info see
+       https://www.gnu.org/software/libc/manual/html_node/Getopt-Long-Options.html */
+    /* TODO add application settings related options */
+    int c;
+    while (1) {
+        static struct option long_options[] = {
+            { "help",    no_argument, 0, 'h'},
+            { "version", no_argument, 0, 'v'},
+            {0, 0, 0, 0}
+        };
+
+        int opt_index = 0;
+        c = getopt_long(argc, argv, "hv", long_options, &opt_index);
+
+        if (c == -1)
+            break;
+
+        switch (c) {
+        case 'h':
+            print_help_stdout();
+            exit(0);
+            break;
+        case 'v':
+            print_info_stdout();
+            exit(0);
+            break;
+        default:
+            exit(1);
+        }
+    }
 }
 
 int main(int argc, char **argv)
 {
-    
+    game_t game;
+    init_game(&game);
+    parse_args(argc, argv, &game); /* args override defaults */
     
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         fprintf(stderr, "sdl2 initialzation error: %s\n", SDL_GetError());
@@ -66,10 +118,6 @@ int main(int argc, char **argv)
     }
 
     srand(time(NULL));
-
-    game_t game;
-    init_game(&game);
-    parse_args(argc, argv, &game); /* args override defaults */
 
     TTF_Font *font = TTF_OpenFont(game.fontPath, FONT_SIZE);
     /* TTF_SetFontsize refuses to cooperate with me, hence font_small */

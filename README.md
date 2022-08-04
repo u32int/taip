@@ -24,7 +24,7 @@ mkdir build && cd build && cmake .. && make
 To run the project, execute the 'main' binary file
 
 ```bash
-./main
+./taip
 ```
 
 ### Disclaimer

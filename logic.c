@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <assert.h>
+#include <errno.h>
 
 #include "game.h"
 #include "logic.h"
@@ -136,6 +137,11 @@ void rand_word(FILE *file, int file_size, char *word_buff)
 void rand_line(game_t *game, int index, const char* wordlist_name, const int words)
 {
     FILE *file = fopen(wordlist_name, "r");
+    if (file == NULL) {
+        fprintf(stderr, "Error opening wordlist '%s': %s\n",
+                wordlist_name, strerror(errno));
+        exit(1);
+    }
     /* get file size */
     fseek(file, 0L, SEEK_END);
     int file_size = ftell(file);

@@ -9,6 +9,14 @@
 
 static int win_w, win_h;
 
+static struct TextFlags {
+    bool center;
+    bool wrap;
+} text_flags = {
+    .center = true,
+    .wrap = false,
+};
+
 void render_caret(SDL_Renderer *renderer, game_t *game, int x, int y)
 {
     boxRGBA(renderer, x+1, y, x+3, y-FONT_SIZE,
@@ -16,22 +24,32 @@ void render_caret(SDL_Renderer *renderer, game_t *game, int x, int y)
             game->theme->primary.a);
 }
 
-void render_text_center(SDL_Renderer *renderer, int x_offset, int y_offset,
-                        TTF_Font *font, SDL_Color color, SDL_Color bg_color,
-                        const char* text)
+/* centered by default, see struct TextFlags */
+void render_text(SDL_Renderer *renderer, int x, int y,
+                 TTF_Font *font, SDL_Color color, SDL_Color bg_color,
+                 const char* text)
 {
     SDL_Surface *text_surface;
-
-    if(!(text_surface = TTF_RenderText_Shaded(font, text, color, bg_color))) {
+    text_surface = text_flags.wrap ?
+        TTF_RenderText_Shaded_Wrapped(font, text, color, bg_color, win_w/2)
+        : TTF_RenderText_Shaded(font, text, color, bg_color);
+    
+    if(!text_surface) {
         fprintf(stderr, "sdl_ttf error: %s", TTF_GetError());
         exit(1);
     }
 
     int txt_w, txt_h;
-    TTF_SizeText(font, text, &txt_w, &txt_h);
+    txt_w = text_surface->w;
+    txt_h = text_surface->h;
+
+    if (text_flags.center) {
+        x += win_w/2-txt_w/2;
+        y += win_h/2-txt_h/2;
+    }
+
     SDL_Rect text_rect = { .h = txt_h, .w = txt_w,
-                           .x = win_w/2-txt_w/2+x_offset,
-                           .y = win_h/2-txt_h/2+y_offset};
+                           .x = x, .y = y};
 
     SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 
@@ -46,11 +64,10 @@ void render_timer(SDL_Renderer *renderer, game_t *game, TTF_Font *font)
     char timerText[16];
     snprintf(timerText, 16, "%lu", (game->timers.timeEnd - SDL_GetTicks64())/1000+1);
 
-    render_text_center(renderer, 0, -100,
+    render_text(renderer, 0, -100,
                        font, game->theme->primary, game->theme->bg,
                        timerText);
 }
-
 
 void render_game(SDL_Renderer *renderer, game_t *game, SDL_Window *window,
                  TTF_Font *font, TTF_Font *font_small)

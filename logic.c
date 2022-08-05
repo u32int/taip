@@ -1,4 +1,6 @@
-#define  _GNU_SOURCE
+#define  _POSIX_C_SOURCE 200809L
+#include <stdio.h>
+#include <stdlib.h>
 
 #include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_timer.h>
@@ -58,6 +60,7 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
 {
     switch (game->state) {
     case Idle:
+        // fall through
     case InProgress:
         switch (mod) {
         case KMOD_NONE:
@@ -100,6 +103,12 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
             case SDLK_q:
                 game->state = Quit;
                 break;
+            case SDLK_h:
+                game->state = Help;
+                break;
+            case SDLK_s:
+                game->state = Settings;
+                break;
             case SDLK_r:
                 reset_game(game);
                 break;
@@ -111,6 +120,15 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
     case Results:
         if (mod == KMOD_LALT && key == SDLK_r)
             reset_game(game);
+        break;
+    case Help:
+         if (mod == KMOD_NONE && key == SDLK_ESCAPE)
+            game->state = Idle;
+        break;
+    case Settings:
+         if (mod == KMOD_NONE && key == SDLK_ESCAPE)
+            game->state = Idle;
+        break;
     default: {}
     }
 }

@@ -36,6 +36,8 @@ typedef enum {
     Idle,
     InProgress,
     Results,
+    Settings,
+    Help,
 } State;
 
 typedef enum {

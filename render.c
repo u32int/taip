@@ -1,7 +1,6 @@
-#include <SDL2/SDL_surface.h>
-#include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
+#include <stdio.h>
 
 #include "game.h"
 #include "render.h"
@@ -77,10 +76,15 @@ void render_game(SDL_Renderer *renderer, game_t *game, SDL_Window *window,
 
     switch (game->state) {
     case Idle:
+        render_text(renderer,
+                    0, win_h/2-FONT_SIZE,
+                    font_small, game->theme->dim, game->theme->bg,
+                    "Press alt-h for help.");
+        // fall through
     case InProgress:
         /* render dim text first, so we can draw progress over it later*/
         for (int i = 0; i < TEXT_LINES; ++i) {
-            render_text_center(renderer,
+            render_text(renderer,
                                0, -50+50*i,
                                font, game->theme->dim, game->theme->bg,
                                game->txtBuff[i]);
@@ -104,12 +108,12 @@ void render_game(SDL_Renderer *renderer, game_t *game, SDL_Window *window,
                          win_h/2-txt_h/2-2);
 
             if (game->errorIndex == -1) {
-                render_text_center(renderer,
+                render_text(renderer,
                                 ceil(((double)(txt_w-ptxt_w))/2)*-1, -50,
                                 font, game->theme->primary, game->theme->bg,
                                 progress_text);
             } else {
-                render_text_center(renderer,
+                render_text(renderer,
                                 (txt_w-ptxt_w)/2*-1, -50,
                                 font, game->theme->primary, game->theme->error,
                                 progress_text);
@@ -133,30 +137,60 @@ void render_game(SDL_Renderer *renderer, game_t *game, SDL_Window *window,
         snprintf(accuracy_text, 32, "accuracy %.2f%%",
                  (1-(float)game->stats.errors/game->stats.totalCharCount)*100);
 
-        render_text_center(renderer,
-                               0, -50,
-                               font, game->theme->primary, game->theme->bg,
-                               wpm_text);
+        render_text(renderer,
+                    0, -50,
+                    font, game->theme->primary, game->theme->bg,
+                    wpm_text);
 
-        render_text_center(renderer,
-                               0, 0,
-                               font_small, game->theme->error, game->theme->bg,
-                               errors_text);
+        render_text(renderer,
+                    0, 0,
+                    font_small, game->theme->error, game->theme->bg,
+                    errors_text);
 
-        render_text_center(renderer,
-                               0, 25,
-                               font_small, game->theme->dim, game->theme->bg,
-                               accuracy_text);
-
-        /* show help */
-        render_text_center(renderer,
-                               0, win_h/2-FONT_SIZE,
-                               font_small, game->theme->dim, game->theme->bg,
-                               "Press alt+r to restart.");
+        render_text(renderer,
+                    0, 25,
+                    font_small, game->theme->dim, game->theme->bg,
+                    accuracy_text);
 
 
+        render_text(renderer,
+                    0, win_h/2-FONT_SIZE,
+                    font_small, game->theme->dim, game->theme->bg,
+                    "Press alt+r to restart.");
         break;
     }
+    case Help:
+        text_flags.wrap = true ;
+        text_flags.center = false;
+        const char* help_text;
+        help_text = "taip is a simple typing game written in C and SDL2.\n\n\
+To begin playing, simply start typing!\n\n\
+Keybindings: \n\
+   Alt-h:    Show this screen\n\
+   Alt-r:    Restart game\n\
+   Alt-s:    Enter the settings menu\n\
+";
+
+        render_text(renderer, win_w/4, FONT_SIZE,
+                    font_small, game->theme->primary, game->theme->bg, help_text);
+
+        text_flags.wrap = false;
+        text_flags.center = true;
+
+        render_text(renderer,
+                    0, win_h/2-FONT_SIZE,
+                    font_small, game->theme->dim, game->theme->bg,
+                    "Press ESC to go back.");
+        break;
+    case Settings:
+        /* TODO settings */
+        render_text(renderer, 0, 0, font, game->theme->dim, game->theme->bg,
+                    "Under Construction..");
+        render_text(renderer,
+                    0, win_h/2-FONT_SIZE,
+                    font_small, game->theme->dim, game->theme->bg,
+                    "Press ESC to go back.");
+        break;
     default: {};
         
     }

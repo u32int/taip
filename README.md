@@ -33,6 +33,8 @@ This project is far from complete and currently in a "minimum viable product" st
 
 Expect big changes and more features as the development progresses.
 
+The master/main branch is not guaranteed to be bug free or even stable at this time.
+
 ### Contributing
 
 All contributions are welcome. Using Github and submitting a pull request for smaller changes or creating an issue for larger ones is the prefered method.

@@ -108,9 +108,7 @@ int main(int argc, char **argv)
 
     SDL_SetWindowResizable(window, true);
 
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1,
-                                                SDL_RENDERER_ACCELERATED
-                                                | SDL_RENDERER_PRESENTVSYNC);
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == NULL) {
         fprintf(stderr, "Couldn't create SDL_Renderer: %s\n", SDL_GetError()); 
         return EXIT_FAILURE;
@@ -144,7 +142,7 @@ int main(int argc, char **argv)
                 break;
             case SDL_TEXTINPUT:
                 if (game.state == Idle || game.state == InProgress) {
-                    handle_input(&game, e.text.text);
+                    handle_text_input(&game, e.text.text);
                 }
                 break;
             default: {}

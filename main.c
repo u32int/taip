@@ -10,6 +10,8 @@
   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
   OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_keycode.h>
 #include <SDL2/SDL_stdinc.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_video.h>
@@ -84,6 +86,8 @@ void parse_args(int argc, char **argv, game_t *game)
 
 int main(int argc, char **argv)
 {
+    srand(time(NULL));
+
     game_t game;
     init_game(&game);
     parse_args(argc, argv, &game); /* args override defaults */
@@ -137,6 +141,11 @@ int main(int argc, char **argv)
                 break;
             case SDL_KEYDOWN:
                 handle_key(&game, e.key.keysym.sym, e.key.keysym.mod);
+                break;
+            case SDL_TEXTINPUT:
+                if (game.state == Idle || game.state == InProgress) {
+                    handle_input(&game, e.text.text);
+                }
                 break;
             default: {}
             }

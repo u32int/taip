@@ -30,8 +30,8 @@ void render_text(SDL_Renderer *renderer, int x, int y,
 {
     SDL_Surface *text_surface;
     text_surface = text_flags.wrap ?
-        TTF_RenderText_Shaded_Wrapped(font, text, color, bg_color, win_w/2)
-        : TTF_RenderText_Shaded(font, text, color, bg_color);
+        TTF_RenderUTF8_Shaded_Wrapped(font, text, color, bg_color, win_w/2)
+        : TTF_RenderUTF8_Shaded(font, text, color, bg_color);
     
     if(!text_surface) {
         fprintf(stderr, "sdl_ttf error: %s", TTF_GetError());
@@ -85,13 +85,13 @@ void render_game(SDL_Renderer *renderer, game_t *game, SDL_Window *window,
         /* render dim text first, so we can draw progress over it later*/
         for (int i = 0; i < TEXT_LINES; ++i) {
             render_text(renderer,
-                               0, -50+50*i,
-                               font, game->theme->dim, game->theme->bg,
-                               game->txtBuff[i]);
+                        0, -50+50*i,
+                        font, game->theme->dim, game->theme->bg,
+                        game->txtBuff[i]);
         }
 
         int txt_w, txt_h;
-        TTF_SizeText(font, game->txtBuff[0], &txt_w, &txt_h);
+        TTF_SizeUTF8(font, game->txtBuff[0], &txt_w, &txt_h);
         if (txt_w % 2 != 0) txt_w++; /* magic to make it divide nicely and prevent 
                                         the letters from displacing because of ints */
         
@@ -101,7 +101,7 @@ void render_game(SDL_Renderer *renderer, game_t *game, SDL_Window *window,
             char progress_text[256] = { 0 };
             memcpy(progress_text, game->txtBuff[0], game->lineProgress);
             int ptxt_w, ptxt_h;
-            TTF_SizeText(font, progress_text, &ptxt_w, &ptxt_h);
+            TTF_SizeUTF8(font, progress_text, &ptxt_w, &ptxt_h);
             if (ptxt_w % 2 != 0) ptxt_w--;
 
             render_caret(renderer, game, win_w/2-txt_w/2+ptxt_w,
@@ -109,14 +109,14 @@ void render_game(SDL_Renderer *renderer, game_t *game, SDL_Window *window,
 
             if (game->errorIndex == -1) {
                 render_text(renderer,
-                                ceil(((double)(txt_w-ptxt_w))/2)*-1, -50,
-                                font, game->theme->primary, game->theme->bg,
-                                progress_text);
+                            ceil(((double)(txt_w-ptxt_w))/2)*-1, -50,
+                            font, game->theme->primary, game->theme->bg,
+                            progress_text);
             } else {
                 render_text(renderer,
-                                (txt_w-ptxt_w)/2*-1, -50,
-                                font, game->theme->primary, game->theme->error,
-                                progress_text);
+                            (txt_w-ptxt_w)/2*-1, -50,
+                            font, game->theme->primary, game->theme->error,
+                            progress_text);
             }
         }
 

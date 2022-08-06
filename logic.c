@@ -8,24 +8,49 @@
 #include <string.h>
 #include <assert.h>
 #include <errno.h>
+#include <ctype.h>
 
 #include "game.h"
 #include "logic.h"
 
-char get_key_ascii(SDL_Keycode key, bool uppercase)
+int next_char_distance(char *c)
 {
-    const char* s_key = SDL_GetKeyName(key);
-    if(strlen(s_key) == 1) {
-        return uppercase ? s_key[0] : 'a'+s_key[0]-'A'; /* convert to lowercase */
-    };
+    unsigned char mask[] = {128, 64, 32, 16, 8, 4, 2, 1};
 
-    if(key == SDLK_SPACE)
-        return ' ';
-        
-    return '\0';
+    if ((c[0] & mask[0]) == 0) {
+        return 1; /* since top bit is 0, text is ascii or code point is only one byte */
+    }
+
+    /* check how many bytes we need to move forward by to skip 1 utf-8 char.
+       this works by checking the top bits of the first byte which indicate the
+       byte length. */
+    int i = 0;
+    size_t dist = 0;
+    while ((c[0] & mask[i++]) != 0 && i < 8) {
+        dist++;
+    }
+
+    return dist;
 }
 
-void advance_line_progress(game_t *game, SDL_Keycode key, SDL_Keymod mod)
+int prev_char_distance(game_t *game, char *c)
+{
+    if (isascii(c[-1])) {
+        return 1;
+    }
+
+    // FIXME: this is a stopgap (handle utf8 backspace correctly)
+
+    /* unsigned char mask[] = {128, 64, 32, 16, 8, 4, 2, 1}; */
+    /* size_t dist = 1; */
+    /* int i = -1; */
+    /* while ((c[i] & mask[0]) != 0 && game->lineProgress + i >= 0) { */
+    /*     dist++; */
+    /* } */
+    return 2;
+}
+
+void handle_input(game_t *game, char *input)
 {
     if(game->lineProgress == 0 && !(game->state == InProgress)) {
         game->state = InProgress;
@@ -37,24 +62,19 @@ void advance_line_progress(game_t *game, SDL_Keycode key, SDL_Keymod mod)
         }
     }
 
-    char key_ascii = get_key_ascii(key, mod == KMOD_LSHIFT || mod == KMOD_RSHIFT);
-    if (key_ascii == game->txtBuff[0][game->lineProgress]) {
-        game->lineProgress++;
-    } else if (key_ascii == '\0') {
-        /* ignore */
-    } else {
+    size_t input_len = strlen(input);
+    if (strncmp(input, &game->txtBuff[0][game->lineProgress], input_len) != 0) {
         if (game->errorIndex == -1) {
             game->errorIndex = game->lineProgress;
         }
         game->stats.errors++;
-        game->lineProgress++;
     }
+    game->lineProgress += next_char_distance(&game->txtBuff[0][game->lineProgress]);
 
     if (game->lineProgress >= game->lineLen) {
         cycle_lines(game);
     }
 }
-
 
 void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
 {
@@ -69,15 +89,15 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
             switch (key) {
             case SDLK_BACKSPACE: 
                 if (game->lineProgress > 0) {
-                    game->lineProgress--;
+                    game->lineProgress -=
+                        prev_char_distance(game, &game->txtBuff[0][game->lineProgress]);
                 }
 
                 if (game->lineProgress == game->errorIndex) {
                     game->errorIndex = -1;
                 }
                 break;
-            default:
-                advance_line_progress(game, key, mod);
+            default: {}
             }
             break;
         case KMOD_LCTRL:
@@ -187,5 +207,5 @@ void rand_line(game_t *game, int index, const char* wordlist_name, const int wor
 void timeModeStart(game_t *game)
 {
     game->timers.timeStart = SDL_GetTicks64();
-    game->timers.timeEnd = SDL_GetTicks64() + game->timeModeSeconds * 1000;
+    game->timers.timeEnd = SDL_GetTicks64() + game->settings.timeModeSeconds * 1000;
 }

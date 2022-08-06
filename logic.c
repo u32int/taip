@@ -118,6 +118,8 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
             default: {}
             }
             break;
+            // FIXME: don't pass the keys to handle_input if mod is LALT
+            // so that it does not input an extra character after game restart for example
         case KMOD_LALT:
             switch (key) {
             case SDLK_q:

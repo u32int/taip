@@ -132,7 +132,7 @@ void render_game(SDL_Renderer *renderer, game_t *game, SDL_Window *window,
         /* which is probably quite accurate for the default easy word list.*/
         char wpm_text[32];
         snprintf(wpm_text, 32, "WPM: %.2f",
-                 (((float)game->stats.totalCharCount / 5) / game->timeModeSeconds) * 60);
+                 (((float)game->stats.totalCharCount / 5) / game->settings.timeModeSeconds) * 60);
         char accuracy_text[32];
         snprintf(accuracy_text, 32, "accuracy %.2f%%",
                  (1-(float)game->stats.errors/game->stats.totalCharCount)*100);

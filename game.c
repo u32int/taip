@@ -10,8 +10,8 @@ void init_game(game_t *game)
     game->state = Idle;
     game->mode = Time;
     
-    game->timeModeSeconds = 30;
-    game->wordModeWords = 50;
+    game->settings.timeModeSeconds = 15;
+    game->settings.wordModeWords = 50;
 
     game->lineProgress = 0;
     game->errorIndex = -1;
@@ -19,8 +19,8 @@ void init_game(game_t *game)
     game->stats.errors = 0;
     game->stats.totalCharCount = 0;
 
-    game->wordlistPath = "../wordlists/mt_english1000.txt";
-    game->fontPath = "../fonts/LiberationSans-Regular.ttf";
+    game->settings.wordlistPath = "../wordlists/mt_polish200.txt";
+    game->settings.fontPath = "../fonts/LiberationSans-Regular.ttf";
 
     set_theme(game, Default);
     reset_game(game);
@@ -29,7 +29,7 @@ void init_game(game_t *game)
 void reset_game(game_t *game)
 {
     for (int i = 0; i < TEXT_LINES; ++i) {
-        rand_line(game, i, game->wordlistPath, 5);
+        rand_line(game, i, game->settings.wordlistPath, 5);
     }
     game->state = Idle;
     game->lineLen = strlen(game->txtBuff[0]);
@@ -52,5 +52,5 @@ void cycle_lines(game_t *game)
     game->lineProgress = 0;
 
     game->errorIndex = -1;
-    rand_line(game, TEXT_LINES-1, game->wordlistPath, 5);
+    rand_line(game, TEXT_LINES-1, game->settings.wordlistPath, 5);
 }

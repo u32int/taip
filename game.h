@@ -47,6 +47,14 @@ typedef enum {
 } Mode;
 
 typedef struct {
+    int timeModeSeconds;
+    int wordModeWords;
+
+    const char *wordlistPath;
+    const char *fontPath;
+} GameSettings;
+
+typedef struct {
     int errors;
     int totalCharCount;
 } TestStats;
@@ -58,23 +66,19 @@ typedef struct {
 
 
 typedef struct {
-    int timeModeSeconds;
-    int wordModeWords;
     char txtBuff[TEXT_LINES][256];
+    unsigned short utfCharLens[256];
     int lineLen;                  /* len and progress of the top/active line */
     int lineProgress;
-    const char *wordlistPath;
-    const char *fontPath;
     int errorIndex;               /* -1 if no error */
-
 
     ThemeColors *theme;
     State state;
+    GameSettings settings;
     Mode mode;
     TestStats stats;
     Timers timers;
 } game_t;
-
 
 void init_game(game_t *game);
 void reset_game(game_t *game);

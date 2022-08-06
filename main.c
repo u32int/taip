@@ -117,12 +117,10 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    srand(time(NULL));
-
-    TTF_Font *font = TTF_OpenFont(game.fontPath, FONT_SIZE);
+    TTF_Font *font = TTF_OpenFont(game.settings.fontPath, FONT_SIZE);
     /* TTF_SetFontsize refuses to cooperate with me, hence font_small */
     /* this is TEMPORARY */
-    TTF_Font *font_small = TTF_OpenFont(game.fontPath, FONT_SIZE/2);  
+    TTF_Font *font_small = TTF_OpenFont(game.settings.fontPath, FONT_SIZE/2);  
     if (font == NULL || font_small == NULL) {
         fprintf(stderr, "Font error: %s\n", TTF_GetError());
         exit(EXIT_FAILURE);

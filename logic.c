@@ -1,4 +1,3 @@
-#define  _POSIX_C_SOURCE 200809L
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -12,6 +11,8 @@
 
 #include "game.h"
 #include "logic.h"
+
+static bool lock_input = false;
 
 int next_char_distance(char *c)
 {
@@ -50,8 +51,13 @@ int prev_char_distance(game_t *game, char *c)
     return 2;
 }
 
-void handle_input(game_t *game, char *input)
+void handle_text_input(game_t *game, char *input)
 {
+    if (lock_input) {
+        lock_input = false;
+        return;
+    }
+
     if(game->lineProgress == 0 && !(game->state == InProgress)) {
         game->state = InProgress;
         switch (game->mode) {
@@ -118,8 +124,6 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
             default: {}
             }
             break;
-            // FIXME: don't pass the keys to handle_input if mod is LALT
-            // so that it does not input an extra character after game restart for example
         case KMOD_LALT:
             switch (key) {
             case SDLK_q:
@@ -135,6 +139,7 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
                 reset_game(game);
                 break;
             }
+            lock_input = true;
         default: {}
         }
         break;
@@ -204,6 +209,8 @@ void rand_line(game_t *game, int index, const char* wordlist_name, const int wor
 
     free(text);
     free(wbuff);
+
+    fclose(file);
 }
 
 void timeModeStart(game_t *game)

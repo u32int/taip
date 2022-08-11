@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -11,6 +12,8 @@
 
 #include "game.h"
 #include "logic.h"
+#include "util.h"
+#include "colors.h"
 
 static bool lock_input = false;
 
@@ -55,6 +58,7 @@ void handle_text_input(game_t *game, char *input)
 {
     if (lock_input) {
         lock_input = false;
+        // puts("input blocked");
         return;
     }
 
@@ -93,7 +97,7 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
         case KMOD_LSHIFT:
         case KMOD_RSHIFT:
             switch (key) {
-            case SDLK_BACKSPACE: 
+            case SDLK_BACKSPACE:
                 if (game->lineProgress > 0) {
                     game->lineProgress -=
                         prev_char_distance(game, &game->txtBuff[0][game->lineProgress]);
@@ -125,7 +129,6 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
             }
             break;
         case KMOD_LALT:
-            lock_input = true;
             switch (key) {
             case SDLK_q:
                 game->state = Quit;
@@ -138,9 +141,9 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
                 break;
             case SDLK_r:
                 reset_game(game);
+                lock_input = true;
                 break;
-            default:
-                lock_input = false;
+            default: {}
             }
         default: {}
         }
@@ -227,17 +230,16 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
 void rand_word(FILE *file, int file_size, char *word_buff)
 {
 
-    /* fseek to somewhere in the file, find the nearest '\n', 
+    /* fseek to somewhere in the file, find the nearest '\n',
        use that word as the random word. */
     int random_offset = rand() % file_size;
     fseek(file, random_offset, SEEK_SET);
     char c;
     while (!feof(file)) {
         c = fgetc(file);
-        if (c == '\n') 
+        if (c == '\n')
             break;
     }
-
     size_t buffsize = 32;
     getline(&word_buff, &buffsize, file);
     word_buff[strcspn(word_buff, "\n")] = '\0'; /* remove trailing newline */
@@ -255,9 +257,9 @@ void rand_line(game_t *game, int index, const char* wordlist_name, const int wor
     fseek(file, 0L, SEEK_END);
     int file_size = ftell(file);
     rewind(file);
-    
+
     /* generate words */
-    char *text = (char*)calloc(256, sizeof(char)); 
+    char *text = (char*)calloc(256, sizeof(char));
     char *wbuff = (char*)calloc(32, sizeof(char));
     char *curr = text;
     for(int i = 0; i < words; ++i) {

@@ -18,22 +18,41 @@
 
 extern int FONT_SIZE;
 
-typedef enum {
-  Default,
-  DefaultLight,
-  DarkYellow,
-  SolarizedDark,
-
-  ThemesCount /* must be the last elem */
-} Theme;
-
 typedef struct {
     const char* prettyName;
     SDL_Color bg;
     SDL_Color primary;
     SDL_Color error;
     SDL_Color dim;
-} ThemeData;
+} Theme;
+
+static Theme themes[] = {
+    { .prettyName = "Default",
+      .bg      = {18, 18, 18, 255},
+      .dim     = {60, 60, 60, 255},
+      .error   = {240, 30, 20, 150},
+      .primary = {240, 240, 240, 255} },
+
+    { .prettyName = "Default Light",
+      .bg      = {244, 244, 227, 255},
+      .dim     = {160, 160, 160, 255},
+      .error   = {240, 30, 20, 255},
+      .primary = {22, 22, 22, 255} },
+
+    { .prettyName = "Dark-Yellow",
+      .bg      = {18, 18, 18, 255},
+      .dim     = {60, 60, 60, 255},
+      .error   = {240, 30, 20, 150},
+      .primary = {240, 220, 35, 255} },
+
+    { .prettyName = "Solarized Dark",
+      .bg      = {0, 43, 54, 255},
+      .dim     = {101, 123, 131, 255},
+      .error   = {220, 50, 47, 150},
+      .primary = {238, 232, 213, 255} },
+};
+
+#define ThemesCount (sizeof(themes)/sizeof(Theme))
 
 typedef enum {
     Quit,
@@ -104,7 +123,7 @@ typedef struct {
     int selSetting;
     size_t settingsCount;
 
-    ThemeData *theme;
+    Theme *theme;
     int selTheme;
 
     State state;
@@ -113,6 +132,8 @@ typedef struct {
     TestStats stats;
     Timers timers;
 } game_t;
+
+void set_theme(game_t *game, int id);
 
 void init_game(game_t *game);
 void reset_game(game_t *game);

@@ -13,7 +13,6 @@
 #include "game.h"
 #include "logic.h"
 #include "util.h"
-#include "colors.h"
 
 static bool lock_input = false;
 
@@ -196,11 +195,11 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
             switch (key) {
             case SDLK_h:
             case SDLK_LEFT:
-                set_theme(game, clamp_int(*(int*)curr_setting->settingPtr-1, 0, ThemesCount));
+                set_theme(game, clamp_int(*(int*)curr_setting->settingPtr-1, 0, ThemesCount-1));
                 break;
             case SDLK_l:
             case SDLK_RIGHT:
-                set_theme(game, clamp_int(*(int*)curr_setting->settingPtr+1, 0, ThemesCount));
+                set_theme(game, clamp_int(*(int*)curr_setting->settingPtr+1, 0, ThemesCount-1));
                 break;
             default: {}
             }

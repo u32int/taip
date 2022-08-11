@@ -1,8 +1,13 @@
 #include "game.h"
 #include "logic.h"
-#include "colors.h"
 #include <stdio.h>
 #include <string.h>
+
+void set_theme(game_t *game, int id)
+{
+    game->selTheme = id;
+    game->theme = &themes[id];
+}
 
 void init_game(game_t *game)
 {
@@ -15,7 +20,7 @@ void init_game(game_t *game)
     game->settings.wordlistPath = "../wordlists/mt_english200.txt";
     game->settings.fontPath = "../fonts/LiberationSans-Regular.ttf";
 
-    set_theme(game, Default);
+    set_theme(game, 0);
     reset_game(game);
 }
 

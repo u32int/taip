@@ -278,7 +278,7 @@ Keybindings: \n\
                                      game->theme->dim.a);
                 }
 
-                if(game->selTheme != ThemesCount) {
+                if(game->selTheme != ThemesCount-1) {
                     int ttxt_w, ttxt_h;
                     TTF_SizeUTF8(font_small, game->theme->prettyName, &ttxt_w, &ttxt_h);
 

@@ -16,7 +16,6 @@ set(SRCS
   game.c
   render.c
   logic.c
-  colors.c
   util.c
 )
 
@@ -24,7 +23,6 @@ set(HEADERS
   game.h
   render.h
   logic.h
-  colors.h
   util.h
 )
 

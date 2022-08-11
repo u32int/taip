@@ -1,6 +1,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include "game.h"
 #include "render.h"
@@ -184,9 +185,118 @@ Keybindings: \n\
                     "Press ESC to go back.");
         break;
     case Settings:
-        /* TODO settings */
-        render_text(renderer, 0, 0, font, game->theme->dim, game->theme->bg,
-                    "Under Construction..");
+        char counter_text[16];
+
+        text_flags.center = false;
+
+        int i = 0;
+        VisibleSetting curr_set;
+        while((curr_set = game->visibleSettings[i++]), curr_set.settingPtr != NULL) {
+            SDL_Color draw_color = game->selSetting == i-1 ?
+                game->theme->primary : game->theme->dim;
+
+            render_text(renderer,
+                            win_w/8, FONT_SIZE*i,
+                            font_small, draw_color, game->theme->bg,
+                            curr_set.label);
+
+            switch(curr_set.type) {
+            case BoolSwitch:
+                render_text(renderer,
+                            win_w/2, FONT_SIZE*i,
+                            font_small,
+                            *(bool*)curr_set.settingPtr ? game->theme->primary : game->theme->dim,
+                            game->theme->bg,
+                            *(bool*)curr_set.settingPtr ? "True" : "False");
+                break;
+            case IntSlider:
+                int slider_length = FONT_SIZE*3;
+                float slider_progress = ((float)*(int*)curr_set.settingPtr)/curr_set.intMax;
+
+                slider_progress = slider_progress*slider_length;
+
+                boxRGBA(renderer,
+                        win_w/2, FONT_SIZE*i,
+                        win_w/2+slider_length, FONT_SIZE*(i+1)-FONT_SIZE/2,
+                        game->theme->dim.r, game->theme->dim.g, game->theme->dim.b,
+                        game->theme->dim.a);
+
+                boxRGBA(renderer,
+                        win_w/2, FONT_SIZE*i,
+                        win_w/2+(int)slider_progress, FONT_SIZE*(i+1)-FONT_SIZE/2,
+                        game->theme->primary.r, game->theme->primary.g, game->theme->primary.b,
+                        game->theme->primary.a);
+
+                snprintf(counter_text, 16, "%d", *(int*)curr_set.settingPtr);
+                render_text(renderer,
+                            win_w/2+slider_length+FONT_SIZE/4, FONT_SIZE*i-1,
+                            font_small, game->theme->primary, game->theme->bg,
+                            counter_text);
+
+                break;
+            case IntCounter:
+                snprintf(counter_text, 16, "%d", *(int*)curr_set.settingPtr);
+                render_text(renderer,
+                            win_w/2, FONT_SIZE*i,
+                            font_small, game->theme->primary, game->theme->bg,
+                            counter_text);
+
+                if(*(int*)curr_set.settingPtr != curr_set.intMin) {
+                    filledTrigonRGBA(renderer,
+                                     win_w/2-FONT_SIZE/3, FONT_SIZE*i+FONT_SIZE/3,
+                                     win_w/2-FONT_SIZE/8, FONT_SIZE*i+3,
+                                     win_w/2-FONT_SIZE/8, FONT_SIZE*i+FONT_SIZE/2,
+                                     game->theme->dim.r, game->theme->dim.g, game->theme->dim.b,
+                                     game->theme->dim.a);
+                }
+
+                if(*(int*)curr_set.settingPtr != curr_set.intMax) {
+                    int ttxt_w, ttxt_h;
+                    TTF_SizeUTF8(font_small, counter_text, &ttxt_w, &ttxt_h);
+
+                    filledTrigonRGBA(renderer,
+                                     win_w/2+FONT_SIZE/3+ttxt_w, FONT_SIZE*i+FONT_SIZE/3,
+                                     win_w/2+FONT_SIZE/8+ttxt_w, FONT_SIZE*i+3,
+                                     win_w/2+FONT_SIZE/8+ttxt_w, FONT_SIZE*i+FONT_SIZE/2,
+                                     game->theme->dim.r, game->theme->dim.g, game->theme->dim.b,
+                                     game->theme->dim.a);
+                }
+
+                break;
+            case ThemeSelector:
+                render_text(renderer,
+                            win_w/2, FONT_SIZE*i,
+                            font_small, game->theme->primary, game->theme->bg,
+                            game->theme->prettyName);
+
+                if(game->selTheme != 0) {
+                    filledTrigonRGBA(renderer,
+                                     win_w/2-FONT_SIZE/3, FONT_SIZE*i+FONT_SIZE/4+3,
+                                     win_w/2-FONT_SIZE/12, FONT_SIZE*i+3,
+                                     win_w/2-FONT_SIZE/12, FONT_SIZE*i+FONT_SIZE/2+3,
+                                     game->theme->dim.r, game->theme->dim.g, game->theme->dim.b,
+                                     game->theme->dim.a);
+                }
+
+                if(game->selTheme != ThemesCount) {
+                    int ttxt_w, ttxt_h;
+                    TTF_SizeUTF8(font_small, game->theme->prettyName, &ttxt_w, &ttxt_h);
+
+                    filledTrigonRGBA(renderer,
+                                     win_w/2+FONT_SIZE/3+ttxt_w, FONT_SIZE*i+FONT_SIZE/4+3,
+                                     win_w/2+FONT_SIZE/12+ttxt_w, FONT_SIZE*i+3,
+                                     win_w/2+FONT_SIZE/12+ttxt_w, FONT_SIZE*i+FONT_SIZE/2+3,
+                                     game->theme->dim.r, game->theme->dim.g, game->theme->dim.b,
+                                     game->theme->dim.a);
+                }
+                break;
+            default:
+                assert(0 && "Setting type unimplemented");
+            }
+        }
+        
+        text_flags.center = true;
+                
         render_text(renderer,
                     0, win_h/2-FONT_SIZE,
                     font_small, game->theme->dim, game->theme->bg,

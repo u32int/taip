@@ -16,20 +16,24 @@
 #define FPS_CAP 60
 #define FPS_DELTA (1000/FPS_CAP)
 
-/* This is temporary */
-#define FONT_SIZE 42
+extern int FONT_SIZE;
 
 typedef enum {
   Default,
   DefaultLight,
+  DarkYellow,
+  SolarizedDark,
+
+  ThemesCount /* must be the last elem */
 } Theme;
 
 typedef struct {
+    const char* prettyName;
     SDL_Color bg;
     SDL_Color primary;
     SDL_Color error;
     SDL_Color dim;
-} ThemeColors;
+} ThemeData;
 
 typedef enum {
     Quit,
@@ -66,17 +70,45 @@ typedef struct {
     Uint64 timeEnd;
 } Timers;
 
+typedef enum {
+    /* generic */
+    BoolSwitch,
+    IntSlider,
+    IntCounter,
+    /* special case */
+    ThemeSelector,
+} VisibleSettingType;
+
+typedef struct {
+    const char *label;
+    void *settingPtr;
+    VisibleSettingType type;
+    union {
+        /* int bounds */
+        struct {
+            int intMax, intMin;
+            int intStep;
+        };
+        size_t strMaxLen;
+    };
+} VisibleSetting;
 
 typedef struct {
     char txtBuff[TEXT_LINES][256];
-    unsigned short utfCharLens[256];
     int lineLen;                  /* len and progress of the top/active line */
     int lineProgress;
     int errorIndex;               /* -1 if no error */
 
-    ThemeColors *theme;
-    State state;
     GameSettings settings;
+    VisibleSetting visibleSettings[32];
+    int selSetting;
+    size_t settingsCount;
+
+    ThemeData *theme;
+    int selTheme;
+
+    State state;
+
     Mode mode;
     TestStats stats;
     Timers timers;

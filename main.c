@@ -31,6 +31,8 @@
 
 #define WINDOW_NAME "taip"
 
+int FONT_SIZE = 32;
+
 void print_info_stdout()
 {
   fprintf(stdout,
@@ -88,7 +90,45 @@ int main(int argc, char **argv)
 {
     srand(time(NULL));
 
-    game_t game;
+    game_t game = {
+        .visibleSettings = {
+            {
+              .label = "Show hints",
+              .settingPtr = &game.settings.showHints,
+              .type = BoolSwitch,
+            },
+            {
+                /* A counter is probably not the best idea.
+                   Ideally this would be a text box accepting only valid numbers */
+              .label = "TimeMode seconds",
+              .settingPtr = &game.settings.timeModeSeconds,
+              .type = IntCounter,
+              .intMax = 240,
+              .intMin = 5,
+            },
+            {
+              .label = "Font Size",
+              .settingPtr = &FONT_SIZE,
+              .type = IntSlider,
+              .intMax = 60,
+              .intMin = 16,
+            },
+            {
+              .label = "Theme",
+              .settingPtr = &game.selTheme,
+              .type = ThemeSelector,
+            },
+            { .settingPtr = NULL },
+        },
+        .selSetting = 0,
+    };
+    int i = 0;
+    VisibleSetting *s;
+    game.settingsCount = 0;
+    while((s = &game.visibleSettings[++i]) && s->settingPtr != NULL)
+        game.settingsCount++;
+
+
     init_game(&game);
     parse_args(argc, argv, &game); /* args override defaults */
     
@@ -120,9 +160,10 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
+    int curr_fontsize = FONT_SIZE;
     TTF_Font *font = TTF_OpenFont(game.settings.fontPath, FONT_SIZE);
-    /* TTF_SetFontsize refuses to cooperate with me, hence font_small */
-    /* this is TEMPORARY */
+    /* TTF_SetFontsize refuses to cooperate with me, hence font_small 
+       this is TEMPORARY */
     TTF_Font *font_small = TTF_OpenFont(game.settings.fontPath, FONT_SIZE/2);  
     if (font == NULL || font_small == NULL) {
         fprintf(stderr, "Font error: %s\n", TTF_GetError());
@@ -149,6 +190,19 @@ int main(int argc, char **argv)
             default: {}
             }
         }
+
+        if (curr_fontsize != FONT_SIZE) {
+            /* again, any attempt to use TTF_SetFontSize results in broken rendering */
+            font = TTF_OpenFont(game.settings.fontPath, FONT_SIZE);
+            font_small = TTF_OpenFont(game.settings.fontPath, FONT_SIZE/2);  
+            if (font == NULL || font_small == NULL) {
+                fprintf(stderr, "Font error: %s\n", TTF_GetError());
+                exit(EXIT_FAILURE);
+            }
+
+            curr_fontsize = FONT_SIZE;
+        }
+
 
         /* if time is up in timeMode, show the results screen */
         if (game.state == InProgress && game.mode == Time) {

@@ -153,13 +153,73 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
         }
         break;
     case Help:
-         if (mod == KMOD_NONE && key == SDLK_ESCAPE)
+        if (mod == KMOD_NONE && key == SDLK_ESCAPE)
             game->state = Idle;
         break;
     case Settings:
-         if (mod == KMOD_NONE && key == SDLK_ESCAPE)
+        switch(key) {
+        case SDLK_ESCAPE:
+        case SDLK_q:
             game->state = Idle;
-        break;
+            reset_game(game);
+            lock_input = true;
+            break;
+        case SDLK_k:
+        case SDLK_UP:
+            game->selSetting = clamp_int(game->selSetting-1, 0, game->settingsCount);
+            break;
+        case SDLK_j:
+        case SDLK_DOWN:
+            game->selSetting = clamp_int(game->selSetting+1, 0, game->settingsCount);
+            break;
+        default: {}
+        }
+
+        VisibleSetting *curr_setting = &game->visibleSettings[game->selSetting];
+        switch(curr_setting->type) {
+        case BoolSwitch:
+            switch (key) {
+            case SDLK_LEFT:
+            case SDLK_RIGHT:
+            case SDLK_h:
+            case SDLK_l:
+            case SDLK_SPACE:
+                *(bool*)curr_setting->settingPtr = !(*(bool*)curr_setting->settingPtr);
+                break;
+            default: {}
+            }
+            break;
+        case ThemeSelector:
+            switch (key) {
+            case SDLK_h:
+            case SDLK_LEFT:
+                set_theme(game, clamp_int(*(int*)curr_setting->settingPtr-1, 0, ThemesCount));
+                break;
+            case SDLK_l:
+            case SDLK_RIGHT:
+                set_theme(game, clamp_int(*(int*)curr_setting->settingPtr+1, 0, ThemesCount));
+                break;
+            default: {}
+            }
+            break;
+        case IntCounter:
+        case IntSlider:
+            switch (key) {
+            case SDLK_h:
+            case SDLK_LEFT:
+                *(int*)curr_setting->settingPtr = clamp_int(*(int*)curr_setting->settingPtr-1,
+                                                            curr_setting->intMin, curr_setting->intMax);
+                break;
+            case SDLK_l:
+            case SDLK_RIGHT:
+                *(int*)curr_setting->settingPtr = clamp_int(*(int*)curr_setting->settingPtr+1,
+                                                            curr_setting->intMin, curr_setting->intMax);
+                break;
+            default: {}
+            }
+            break;
+        default: {}
+        }
     default: {}
     }
 }

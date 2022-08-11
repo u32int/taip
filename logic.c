@@ -125,6 +125,7 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
             }
             break;
         case KMOD_LALT:
+            lock_input = true;
             switch (key) {
             case SDLK_q:
                 game->state = Quit;
@@ -138,15 +139,18 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
             case SDLK_r:
                 reset_game(game);
                 break;
+            default:
+                lock_input = false;
             }
-            lock_input = true;
         default: {}
         }
         break;
 
     case Results:
-        if (mod == KMOD_LALT && key == SDLK_r)
+        if (mod == KMOD_LALT && key == SDLK_r) {
             reset_game(game);
+            lock_input = true;
+        }
         break;
     case Help:
          if (mod == KMOD_NONE && key == SDLK_ESCAPE)

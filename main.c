@@ -98,7 +98,8 @@ int main(int argc, char **argv)
     }
 
     SDL_Window *window = SDL_CreateWindow(WINDOW_NAME,
-                                          100, 100,
+                                          SDL_WINDOWPOS_UNDEFINED,
+                                          SDL_WINDOWPOS_UNDEFINED,
                                           SCR_WIDTH, SCR_HEIGHT,
                                           SDL_WINDOW_SHOWN);
     if (window == NULL) {

@@ -9,13 +9,13 @@ void init_game(game_t *game)
     /* default settings */
     game->mode = Time;
     
-    game->settings.timeModeSeconds = 15;
+    game->settings.timeModeSeconds = 30;
     game->settings.wordModeWords = 50;
-    game->settings.showHints = true;
+    game->settings.showHints = false;
     game->settings.wordlistPath = "../wordlists/mt_english200.txt";
     game->settings.fontPath = "../fonts/LiberationSans-Regular.ttf";
 
-    set_theme(game, SolarizedDark);
+    set_theme(game, Default);
     reset_game(game);
 }
 

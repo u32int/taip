@@ -47,6 +47,8 @@ typedef enum {
 } Mode;
 
 typedef struct {
+    bool showHints;
+
     int timeModeSeconds;
     int wordModeWords;
 

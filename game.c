@@ -7,22 +7,15 @@
 void init_game(game_t *game)
 {
     /* default settings */
-    game->state = Idle;
     game->mode = Time;
     
     game->settings.timeModeSeconds = 15;
     game->settings.wordModeWords = 50;
-
-    game->lineProgress = 0;
-    game->errorIndex = -1;
-
-    game->stats.errors = 0;
-    game->stats.totalCharCount = 0;
-
-    game->settings.wordlistPath = "../wordlists/mt_polish200.txt";
+    game->settings.showHints = true;
+    game->settings.wordlistPath = "../wordlists/mt_english200.txt";
     game->settings.fontPath = "../fonts/LiberationSans-Regular.ttf";
 
-    set_theme(game, Default);
+    set_theme(game, SolarizedDark);
     reset_game(game);
 }
 

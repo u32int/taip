@@ -19,7 +19,7 @@ static struct TextFlags {
 
 void render_caret(SDL_Renderer *renderer, game_t *game, int x, int y)
 {
-    boxRGBA(renderer, x+1, y, x+3, y-FONT_SIZE,
+    boxRGBA(renderer, x, y+FONT_SIZE/6, x+3, y-FONT_SIZE+FONT_SIZE/12,
             game->theme->primary.r, game->theme->primary.g, game->theme->primary.b,
             game->theme->primary.a);
 }
@@ -64,7 +64,7 @@ void render_timer(SDL_Renderer *renderer, game_t *game, TTF_Font *font)
     char timerText[16];
     snprintf(timerText, 16, "%lu", (game->timers.timeEnd - SDL_GetTicks64())/1000+1);
 
-    render_text(renderer, 0, -100,
+    render_text(renderer, 0, (-TEXT_LINES/2-1)*FONT_SIZE,
                        font, game->theme->primary, game->theme->bg,
                        timerText);
 }
@@ -85,12 +85,15 @@ void render_game(SDL_Renderer *renderer, game_t *game, SDL_Window *window,
         // fall through
     case InProgress:
         /* render dim text first, so we can draw progress over it later*/
-        for (int i = 0; i < TEXT_LINES; ++i) {
+        for (int i = TEXT_LINES-1; i >= 0; --i) {
             render_text(renderer,
-                        0, -50+50*i,
+                        0, -FONT_SIZE+FONT_SIZE*i,
                         font, game->theme->dim, game->theme->bg,
                         game->txtBuff[i]);
         }
+
+        if (game->state == InProgress && game->mode == Time)
+            render_timer(renderer, game, font);
 
         int txt_w, txt_h;
         TTF_SizeUTF8(font, game->txtBuff[0], &txt_w, &txt_h);
@@ -111,19 +114,16 @@ void render_game(SDL_Renderer *renderer, game_t *game, SDL_Window *window,
 
             if (game->errorIndex == -1) {
                 render_text(renderer,
-                            ceil(((double)(txt_w-ptxt_w))/2)*-1, -50,
+                            ceil(((double)(txt_w-ptxt_w))/2)*-1, -FONT_SIZE,
                             font, game->theme->primary, game->theme->bg,
                             progress_text);
             } else {
                 render_text(renderer,
-                            (txt_w-ptxt_w)/2*-1, -50,
+                            (txt_w-ptxt_w)/2*-1, -FONT_SIZE,
                             font, game->theme->primary, game->theme->error,
                             progress_text);
             }
         }
-
-        if (game->state == InProgress && game->mode == Time)
-            render_timer(renderer, game, font);
 
         break;
         /* TODO improve this screen with more stats */

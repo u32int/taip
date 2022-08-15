@@ -221,7 +221,7 @@ int main(int argc, char **argv)
         SDL_SetRenderDrawColor(renderer, game.theme->bg.r, game.theme->bg.g,
                                game.theme->bg.b, game.theme->bg.a);
         SDL_RenderClear(renderer);
-        render_game(renderer, &game, window, font, font_small);
+        render_game(renderer, &game, font, font_small);
         SDL_RenderPresent(renderer);
  
         /* limit fps */

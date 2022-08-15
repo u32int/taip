@@ -15,6 +15,9 @@ static struct TextFlags {
     .wrap = false,
 };
 
+
+/* general purpose render functions */
+
 void render_caret(SDL_Renderer *renderer, game_t *game, int x, int y)
 {
     boxRGBA(renderer, x, y+FONT_SIZE/6, x+3, y-FONT_SIZE+FONT_SIZE/12,
@@ -67,7 +70,199 @@ void render_timer(SDL_Renderer *renderer, game_t *game, TTF_Font *font)
                        timerText);
 }
 
-void render_game(SDL_Renderer *renderer, game_t *game, SDL_Window *window,
+
+/* game screens */
+
+/* TODO improve this screen with more stats */
+void render_results(SDL_Renderer *renderer, game_t *game, 
+                    TTF_Font *font, TTF_Font *font_small)
+{
+    char errors_text[32];
+    snprintf(errors_text, 32, "mistakes: %d", game->stats.errors);
+    /* TODO more accurate WPM calculcation, currently it arbitraily divides by 5 */
+    /* which is probably quite accurate for the default easy word list.*/
+    char wpm_text[32];
+    snprintf(wpm_text, 32, "WPM: %.2f",
+                (((float)game->stats.totalCharCount / 5) / game->settings.timeModeSeconds) * 60);
+    char accuracy_text[32];
+    snprintf(accuracy_text, 32, "accuracy %.2f%%",
+                (1-(float)game->stats.errors/game->stats.totalCharCount)*100);
+
+    render_text(renderer,
+                0, -50,
+                font, game->theme->primary, game->theme->bg,
+                wpm_text);
+
+    render_text(renderer,
+                0, 0,
+                font_small, game->theme->error, game->theme->bg,
+                errors_text);
+
+    render_text(renderer,
+                0, 25,
+                font_small, game->theme->dim, game->theme->bg,
+                accuracy_text);
+
+
+    render_text(renderer,
+                0, win_h/2-FONT_SIZE,
+                font_small, game->theme->dim, game->theme->bg,
+                "Press alt+r to restart.");
+}
+
+void render_help(SDL_Renderer *renderer, game_t *game, 
+                        TTF_Font *font, TTF_Font *font_small)
+{
+    text_flags.wrap = true ;
+    text_flags.center = false;
+    const char* help_text;
+    help_text = "taip is a simple typing game written in C and SDL2.\n\n\
+To begin playing, simply start typing!\n\n\
+Keybindings: \n\
+Alt-h:    Show this screen\n\
+Alt-r:    Restart game\n\
+Alt-s:    Enter the settings menu\n\
+";
+
+    render_text(renderer, win_w/4, FONT_SIZE,
+                font_small, game->theme->primary, game->theme->bg, help_text);
+
+    text_flags.wrap = false;
+    text_flags.center = true;
+
+    render_text(renderer,
+                0, win_h/2-FONT_SIZE,
+                font_small, game->theme->dim, game->theme->bg,
+                "Press ESC to go back.");
+}
+
+void render_settings(SDL_Renderer *renderer, game_t *game, 
+                    TTF_Font *font, TTF_Font *font_small)
+{
+    char counter_text[16];
+
+    text_flags.center = false;
+
+    int i = 0;
+    VisibleSetting curr_set;
+    while((curr_set = game->visibleSettings[i++]), curr_set.settingPtr != NULL) {
+        SDL_Color draw_color = game->selSetting == i-1 ?
+            game->theme->primary : game->theme->dim;
+
+        render_text(renderer,
+                    win_w/8, FONT_SIZE*i,
+                    font_small, draw_color, game->theme->bg,
+                    curr_set.label);
+
+        switch(curr_set.type) {
+        case BoolSwitch: {
+            render_text(renderer,
+                        win_w/2, FONT_SIZE*i,
+                        font_small,
+                        *(bool*)curr_set.settingPtr ?
+                        game->theme->primary : game->theme->dim,
+                        game->theme->bg,
+                        *(bool*)curr_set.settingPtr ? "True" : "False");
+            break;
+        }
+        case IntSlider: {
+            int slider_length = FONT_SIZE*3;
+            float setting_value = (float)*(int*)curr_set.settingPtr;
+            float slider_progress =
+                (setting_value-curr_set.intMin)/(curr_set.intMax-curr_set.intMin);
+
+            slider_progress = slider_progress*slider_length;
+
+            boxRGBA(renderer,
+                    win_w/2, FONT_SIZE*i,
+                    win_w/2+slider_length, FONT_SIZE*(i+1)-FONT_SIZE/2,
+                    game->theme->dim.r, game->theme->dim.g, game->theme->dim.b,
+                    game->theme->dim.a);
+
+            boxRGBA(renderer,
+                    win_w/2, FONT_SIZE*i,
+                    win_w/2+(int)slider_progress, FONT_SIZE*(i+1)-FONT_SIZE/2,
+                    game->theme->primary.r, game->theme->primary.g,
+                    game->theme->primary.b, game->theme->primary.a);
+
+            snprintf(counter_text, 16, "%d", *(int*)curr_set.settingPtr);
+            render_text(renderer,
+                        win_w/2+slider_length+FONT_SIZE/4, FONT_SIZE*i-1,
+                        font_small, game->theme->primary, game->theme->bg,
+                        counter_text);
+
+            break;
+        case IntCounter:
+            snprintf(counter_text, 16, "%d", *(int*)curr_set.settingPtr);
+            render_text(renderer,
+                        win_w/2, FONT_SIZE*i,
+                        font_small, game->theme->primary, game->theme->bg,
+                        counter_text);
+
+            if(*(int*)curr_set.settingPtr != curr_set.intMin) {
+                filledTrigonRGBA(renderer,
+                                 win_w/2-FONT_SIZE/3, FONT_SIZE*i+FONT_SIZE/3,
+                                 win_w/2-FONT_SIZE/8, FONT_SIZE*i+3,
+                                 win_w/2-FONT_SIZE/8, FONT_SIZE*i+FONT_SIZE/2,
+                                 game->theme->dim.r, game->theme->dim.g,
+                                 game->theme->dim.b, game->theme->dim.a);
+            }
+
+            if(*(int*)curr_set.settingPtr != curr_set.intMax) {
+                int ttxt_w, ttxt_h;
+                TTF_SizeUTF8(font_small, counter_text, &ttxt_w, &ttxt_h);
+
+                filledTrigonRGBA(renderer,
+                                 win_w/2+FONT_SIZE/3+ttxt_w, FONT_SIZE*i+FONT_SIZE/3,
+                                 win_w/2+FONT_SIZE/8+ttxt_w, FONT_SIZE*i+3,
+                                 win_w/2+FONT_SIZE/8+ttxt_w, FONT_SIZE*i+FONT_SIZE/2,
+                                 game->theme->dim.r, game->theme->dim.g,
+                                 game->theme->dim.b, game->theme->dim.a);
+            }
+
+            break;
+        }
+        case ThemeSelector:
+            render_text(renderer,
+                        win_w/2, FONT_SIZE*i,
+                        font_small, game->theme->primary, game->theme->bg,
+                        game->theme->prettyName);
+
+            if(game->selTheme != 0) {
+                filledTrigonRGBA(renderer,
+                                 win_w/2-FONT_SIZE/3, FONT_SIZE*i+FONT_SIZE/4+3,
+                                 win_w/2-FONT_SIZE/12, FONT_SIZE*i+3,
+                                 win_w/2-FONT_SIZE/12, FONT_SIZE*i+FONT_SIZE/2+3,
+                                 game->theme->dim.r, game->theme->dim.g,
+                                 game->theme->dim.b, game->theme->dim.a);
+            }
+
+            if(game->selTheme != ThemesCount-1) {
+                int ttxt_w, ttxt_h;
+                TTF_SizeUTF8(font_small, game->theme->prettyName, &ttxt_w, &ttxt_h);
+
+                filledTrigonRGBA(renderer,
+                                 win_w/2+FONT_SIZE/3+ttxt_w, FONT_SIZE*i+FONT_SIZE/4+3,
+                                 win_w/2+FONT_SIZE/12+ttxt_w, FONT_SIZE*i+3,
+                                 win_w/2+FONT_SIZE/12+ttxt_w, FONT_SIZE*i+FONT_SIZE/2+3,
+                                 game->theme->dim.r, game->theme->dim.g,
+                                 game->theme->dim.b, game->theme->dim.a);
+            }
+            break;
+        default:
+            assert(1 && "Setting type unimplemented");
+        }
+    }
+
+    text_flags.center = true;
+
+    render_text(renderer,
+                0, win_h/2-FONT_SIZE,
+                font_small, game->theme->dim, game->theme->bg,
+                "Press ESC to go back.");
+}
+
+void render_game(SDL_Renderer *renderer, game_t *game, 
                  TTF_Font *font, TTF_Font *font_small)
 {
     switch (game->state) {
@@ -119,192 +314,20 @@ void render_game(SDL_Renderer *renderer, game_t *game, SDL_Window *window,
                             progress_text);
             }
         }
-
         break;
-        /* TODO improve this screen with more stats */
     case Results: {
-        char errors_text[32];
-        snprintf(errors_text, 32, "mistakes: %d", game->stats.errors);
-        /* TODO more accurate WPM calculcation, currently it arbitraily divides by 5 */
-        /* which is probably quite accurate for the default easy word list.*/
-        char wpm_text[32];
-        snprintf(wpm_text, 32, "WPM: %.2f",
-                 (((float)game->stats.totalCharCount / 5) / game->settings.timeModeSeconds) * 60);
-        char accuracy_text[32];
-        snprintf(accuracy_text, 32, "accuracy %.2f%%",
-                 (1-(float)game->stats.errors/game->stats.totalCharCount)*100);
-
-        render_text(renderer,
-                    0, -50,
-                    font, game->theme->primary, game->theme->bg,
-                    wpm_text);
-
-        render_text(renderer,
-                    0, 0,
-                    font_small, game->theme->error, game->theme->bg,
-                    errors_text);
-
-        render_text(renderer,
-                    0, 25,
-                    font_small, game->theme->dim, game->theme->bg,
-                    accuracy_text);
-
-
-        render_text(renderer,
-                    0, win_h/2-FONT_SIZE,
-                    font_small, game->theme->dim, game->theme->bg,
-                    "Press alt+r to restart.");
+        render_results(renderer, game, font, font_small);
         break;
     }
-    case Help:
-        text_flags.wrap = true ;
-        text_flags.center = false;
-        const char* help_text;
-        help_text = "taip is a simple typing game written in C and SDL2.\n\n\
-To begin playing, simply start typing!\n\n\
-Keybindings: \n\
-   Alt-h:    Show this screen\n\
-   Alt-r:    Restart game\n\
-   Alt-s:    Enter the settings menu\n\
-";
-
-        render_text(renderer, win_w/4, FONT_SIZE,
-                    font_small, game->theme->primary, game->theme->bg, help_text);
-
-        text_flags.wrap = false;
-        text_flags.center = true;
-
-        render_text(renderer,
-                    0, win_h/2-FONT_SIZE,
-                    font_small, game->theme->dim, game->theme->bg,
-                    "Press ESC to go back.");
+    case Help: {
+        render_help(renderer, game, font, font_small);
         break;
+    }
     case Settings: {
-        char counter_text[16];
-
-        text_flags.center = false;
-
-        int i = 0;
-        VisibleSetting curr_set;
-        while((curr_set = game->visibleSettings[i++]), curr_set.settingPtr != NULL) {
-            SDL_Color draw_color = game->selSetting == i-1 ?
-                game->theme->primary : game->theme->dim;
-
-            render_text(renderer,
-                            win_w/8, FONT_SIZE*i,
-                            font_small, draw_color, game->theme->bg,
-                            curr_set.label);
-
-            switch(curr_set.type) {
-            case BoolSwitch: {
-                render_text(renderer,
-                            win_w/2, FONT_SIZE*i,
-                            font_small,
-                            *(bool*)curr_set.settingPtr ?
-                            game->theme->primary : game->theme->dim,
-                            game->theme->bg,
-                            *(bool*)curr_set.settingPtr ? "True" : "False");
-                break;
-            }
-            case IntSlider: {
-                int slider_length = FONT_SIZE*3;
-                float setting_value = (float)*(int*)curr_set.settingPtr;
-                float slider_progress =
-                    (setting_value-curr_set.intMin)/(curr_set.intMax-curr_set.intMin);
-
-                slider_progress = slider_progress*slider_length;
-
-                boxRGBA(renderer,
-                        win_w/2, FONT_SIZE*i,
-                        win_w/2+slider_length, FONT_SIZE*(i+1)-FONT_SIZE/2,
-                        game->theme->dim.r, game->theme->dim.g, game->theme->dim.b,
-                        game->theme->dim.a);
-
-                boxRGBA(renderer,
-                        win_w/2, FONT_SIZE*i,
-                        win_w/2+(int)slider_progress, FONT_SIZE*(i+1)-FONT_SIZE/2,
-                        game->theme->primary.r, game->theme->primary.g, game->theme->primary.b,
-                        game->theme->primary.a);
-
-                snprintf(counter_text, 16, "%d", *(int*)curr_set.settingPtr);
-                render_text(renderer,
-                            win_w/2+slider_length+FONT_SIZE/4, FONT_SIZE*i-1,
-                            font_small, game->theme->primary, game->theme->bg,
-                            counter_text);
-
-                break;
-            case IntCounter:
-                snprintf(counter_text, 16, "%d", *(int*)curr_set.settingPtr);
-                render_text(renderer,
-                            win_w/2, FONT_SIZE*i,
-                            font_small, game->theme->primary, game->theme->bg,
-                            counter_text);
-
-                if(*(int*)curr_set.settingPtr != curr_set.intMin) {
-                    filledTrigonRGBA(renderer,
-                                     win_w/2-FONT_SIZE/3, FONT_SIZE*i+FONT_SIZE/3,
-                                     win_w/2-FONT_SIZE/8, FONT_SIZE*i+3,
-                                     win_w/2-FONT_SIZE/8, FONT_SIZE*i+FONT_SIZE/2,
-                                     game->theme->dim.r, game->theme->dim.g,
-                                     game->theme->dim.b, game->theme->dim.a);
-                }
-
-                if(*(int*)curr_set.settingPtr != curr_set.intMax) {
-                    int ttxt_w, ttxt_h;
-                    TTF_SizeUTF8(font_small, counter_text, &ttxt_w, &ttxt_h);
-
-                    filledTrigonRGBA(renderer,
-                                     win_w/2+FONT_SIZE/3+ttxt_w, FONT_SIZE*i+FONT_SIZE/3,
-                                     win_w/2+FONT_SIZE/8+ttxt_w, FONT_SIZE*i+3,
-                                     win_w/2+FONT_SIZE/8+ttxt_w, FONT_SIZE*i+FONT_SIZE/2,
-                                     game->theme->dim.r, game->theme->dim.g,
-                                     game->theme->dim.b, game->theme->dim.a);
-                }
-
-                break;
-            }
-            case ThemeSelector:
-                render_text(renderer,
-                            win_w/2, FONT_SIZE*i,
-                            font_small, game->theme->primary, game->theme->bg,
-                            game->theme->prettyName);
-
-                if(game->selTheme != 0) {
-                    filledTrigonRGBA(renderer,
-                                     win_w/2-FONT_SIZE/3, FONT_SIZE*i+FONT_SIZE/4+3,
-                                     win_w/2-FONT_SIZE/12, FONT_SIZE*i+3,
-                                     win_w/2-FONT_SIZE/12, FONT_SIZE*i+FONT_SIZE/2+3,
-                                     game->theme->dim.r, game->theme->dim.g,
-                                     game->theme->dim.b, game->theme->dim.a);
-                }
-
-                if(game->selTheme != ThemesCount-1) {
-                    int ttxt_w, ttxt_h;
-                    TTF_SizeUTF8(font_small, game->theme->prettyName, &ttxt_w, &ttxt_h);
-
-                    filledTrigonRGBA(renderer,
-                                     win_w/2+FONT_SIZE/3+ttxt_w, FONT_SIZE*i+FONT_SIZE/4+3,
-                                     win_w/2+FONT_SIZE/12+ttxt_w, FONT_SIZE*i+3,
-                                     win_w/2+FONT_SIZE/12+ttxt_w, FONT_SIZE*i+FONT_SIZE/2+3,
-                                     game->theme->dim.r, game->theme->dim.g,
-                                     game->theme->dim.b, game->theme->dim.a);
-                }
-                break;
-            default:
-                assert(0 && "Setting type unimplemented");
-            }
-        }
-        
-        text_flags.center = true;
-                
-        render_text(renderer,
-                    0, win_h/2-FONT_SIZE,
-                    font_small, game->theme->dim, game->theme->bg,
-                    "Press ESC to go back.");
+        render_settings(renderer, game, font, font_small);
         break;
     }
     default: {};
-        
     }
    
 }

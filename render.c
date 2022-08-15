@@ -228,7 +228,7 @@ void render_settings(SDL_Renderer *renderer, game_t *game,
                         font_small, game->theme->primary, game->theme->bg,
                         game->theme->prettyName);
 
-            if(game->selTheme != 0) {
+            if(game->settings.selTheme != 0) {
                 filledTrigonRGBA(renderer,
                                  win_w/2-FONT_SIZE/3, FONT_SIZE*i+FONT_SIZE/4+3,
                                  win_w/2-FONT_SIZE/12, FONT_SIZE*i+3,
@@ -237,7 +237,7 @@ void render_settings(SDL_Renderer *renderer, game_t *game,
                                  game->theme->dim.b, game->theme->dim.a);
             }
 
-            if(game->selTheme != ThemesCount-1) {
+            if(game->settings.selTheme != ThemesCount-1) {
                 int ttxt_w, ttxt_h;
                 TTF_SizeUTF8(font_small, game->theme->prettyName, &ttxt_w, &ttxt_h);
 
@@ -249,8 +249,39 @@ void render_settings(SDL_Renderer *renderer, game_t *game,
                                  game->theme->dim.b, game->theme->dim.a);
             }
             break;
+            /* this is kind of just code duplication, although it does make rendering
+               different settings in different ways easier */
+        case WordlistSelector:
+             render_text(renderer,
+                        win_w/2, FONT_SIZE*i,
+                        font_small, game->theme->primary, game->theme->bg,
+                        wordlists[game->settings.selWordlist].prettyName);
+
+            if(game->settings.selWordlist != 0) {
+                filledTrigonRGBA(renderer,
+                                 win_w/2-FONT_SIZE/3, FONT_SIZE*i+FONT_SIZE/4+3,
+                                 win_w/2-FONT_SIZE/12, FONT_SIZE*i+3,
+                                 win_w/2-FONT_SIZE/12, FONT_SIZE*i+FONT_SIZE/2+3,
+                                 game->theme->dim.r, game->theme->dim.g,
+                                 game->theme->dim.b, game->theme->dim.a);
+            }
+
+            if(game->settings.selWordlist != WordlistCount-1) {
+                int ttxt_w, ttxt_h;
+                TTF_SizeUTF8(font_small, wordlists[game->settings.selWordlist].prettyName,
+                             &ttxt_w, &ttxt_h);
+
+                filledTrigonRGBA(renderer,
+                                 win_w/2+FONT_SIZE/3+ttxt_w, FONT_SIZE*i+FONT_SIZE/4+3,
+                                 win_w/2+FONT_SIZE/12+ttxt_w, FONT_SIZE*i+3,
+                                 win_w/2+FONT_SIZE/12+ttxt_w, FONT_SIZE*i+FONT_SIZE/2+3,
+                                 game->theme->dim.r, game->theme->dim.g,
+                                 game->theme->dim.b, game->theme->dim.a);
+            }
+            break;           
+
         default:
-            assert(1 && "Setting type unimplemented");
+            assert(0 && "Setting type unimplemented");
         }
     }
 

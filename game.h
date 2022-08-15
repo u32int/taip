@@ -17,8 +17,20 @@
 #define FPS_DELTA (1000/FPS_CAP)
 
 extern int FONT_SIZE;
-
 extern int win_w, win_h;
+
+typedef struct {
+    const char* prettyName;
+    const char* filePath;
+} Wordlist;
+
+static const Wordlist wordlists[] = {
+    { "English (monkeytype)",    "../wordlists/mt_english200.txt" },
+    { "English 1k (monkeytype)", "../wordlists/mt_english1k.txt" },
+    { "Polish 1k (monkeytype)",  "../wordlists/mt_polish200.txt" },
+};
+
+#define WordlistCount (sizeof(wordlists)/sizeof(Wordlist))
 
 typedef struct {
     const char* prettyName;
@@ -28,7 +40,7 @@ typedef struct {
     SDL_Color primary;
 } Theme;
 
-static Theme themes[] = {
+static const Theme themes[] = {
     { .prettyName = "Default",
       .bg      = {18, 18, 18, 255},
       .dim     = {60, 60, 60, 255},
@@ -73,11 +85,12 @@ typedef enum {
 
 typedef struct {
     bool showHints;
-
     int timeModeSeconds;
     int wordModeWords;
 
-    const char *wordlistPath;
+    int selTheme;
+    int selWordlist;
+
     const char *fontPath;
 } GameSettings;
 
@@ -98,6 +111,7 @@ typedef enum {
     IntCounter,
     /* special case */
     ThemeSelector,
+    WordlistSelector,
 } VisibleSettingType;
 
 typedef struct {
@@ -110,7 +124,6 @@ typedef struct {
             int intMax, intMin;
             int intStep;
         };
-        size_t strMaxLen;
     };
 } VisibleSetting;
 
@@ -123,13 +136,10 @@ typedef struct {
     GameSettings settings;
     VisibleSetting visibleSettings[32];
     int selSetting;
-    size_t settingsCount;
+    int settingsCount;
 
-    Theme *theme;
-    int selTheme;
-
+    const Theme *theme;
     State state;
-
     Mode mode;
     TestStats stats;
     Timers timers;

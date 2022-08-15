@@ -195,11 +195,28 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
             switch (key) {
             case SDLK_h:
             case SDLK_LEFT:
-                set_theme(game, clamp_int(*(int*)curr_setting->settingPtr-1, 0, ThemesCount-1));
+                set_theme(game, clamp_int(*(int*)curr_setting->settingPtr-1,
+                                          0, ThemesCount-1));
                 break;
             case SDLK_l:
             case SDLK_RIGHT:
-                set_theme(game, clamp_int(*(int*)curr_setting->settingPtr+1, 0, ThemesCount-1));
+                set_theme(game, clamp_int(*(int*)curr_setting->settingPtr+1,
+                                          0, ThemesCount-1));
+                break;
+            default: {}
+            }
+            break;
+        case WordlistSelector:
+            switch (key) {
+            case SDLK_h:
+            case SDLK_LEFT:
+                *(int*)curr_setting->settingPtr =
+                    clamp_int(*(int*)curr_setting->settingPtr-1, 0, WordlistCount-1);
+                break;
+            case SDLK_l:
+            case SDLK_RIGHT:
+                *(int*)curr_setting->settingPtr =
+                    clamp_int(*(int*)curr_setting->settingPtr+1, 0, WordlistCount-1);
                 break;
             default: {}
             }
@@ -209,13 +226,15 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
             switch (key) {
             case SDLK_h:
             case SDLK_LEFT:
-                *(int*)curr_setting->settingPtr = clamp_int(*(int*)curr_setting->settingPtr-1,
-                                                            curr_setting->intMin, curr_setting->intMax);
+                *(int*)curr_setting->settingPtr =
+                    clamp_int(*(int*)curr_setting->settingPtr-1,
+                              curr_setting->intMin, curr_setting->intMax);
                 break;
             case SDLK_l:
             case SDLK_RIGHT:
-                *(int*)curr_setting->settingPtr = clamp_int(*(int*)curr_setting->settingPtr+1,
-                                                            curr_setting->intMin, curr_setting->intMax);
+                *(int*)curr_setting->settingPtr =
+                    clamp_int(*(int*)curr_setting->settingPtr+1,
+                              curr_setting->intMin, curr_setting->intMax);
                 break;
             default: {}
             }

@@ -116,8 +116,13 @@ int main(int argc, char **argv)
             },
             {
               .label = "Theme",
-              .settingPtr = &game.selTheme,
+              .settingPtr = &game.settings.selTheme,
               .type = ThemeSelector,
+            },
+            {
+              .label = "Word List",
+              .settingPtr = &game.settings.selWordlist,
+              .type = WordlistSelector,
             },
             { .settingPtr = NULL },
         },

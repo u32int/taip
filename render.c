@@ -208,7 +208,9 @@ Keybindings: \n\
             }
             case IntSlider: {
                 int slider_length = FONT_SIZE*3;
-                float slider_progress = ((float)*(int*)curr_set.settingPtr)/curr_set.intMax;
+                float setting_value = (float)*(int*)curr_set.settingPtr;
+                float slider_progress =
+                    (setting_value-curr_set.intMin)/(curr_set.intMax-curr_set.intMin);
 
                 slider_progress = slider_progress*slider_length;
 

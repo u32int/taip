@@ -31,7 +31,8 @@
 
 #define WINDOW_NAME "taip"
 
-int FONT_SIZE = 32;
+int FONT_SIZE = 42;
+int win_w, win_h;
 
 void print_info_stdout()
 {
@@ -125,9 +126,9 @@ int main(int argc, char **argv)
     int i = 0;
     VisibleSetting *s;
     game.settingsCount = 0;
-    while((s = &game.visibleSettings[++i]) && s->settingPtr != NULL)
+    while((s = &game.visibleSettings[++i]) && s->settingPtr != NULL) {
         game.settingsCount++;
-
+    }
 
     init_game(&game);
     parse_args(argc, argv, &game); /* args override defaults */
@@ -160,7 +161,7 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    int curr_fontsize = FONT_SIZE;
+    int displayed_fontsize = FONT_SIZE;
     TTF_Font *font = TTF_OpenFont(game.settings.fontPath, FONT_SIZE);
     /* TTF_SetFontsize refuses to cooperate with me, hence font_small 
        this is TEMPORARY */
@@ -187,11 +188,16 @@ int main(int argc, char **argv)
                     handle_text_input(&game, e.text.text);
                 }
                 break;
+            case SDL_WINDOWEVENT:
+                if (e.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                    SDL_GetWindowSize(window, &win_w, &win_h);
+                }
+                break;
             default: {}
             }
         }
 
-        if (curr_fontsize != FONT_SIZE) {
+        if (displayed_fontsize != FONT_SIZE) {
             /* again, any attempt to use TTF_SetFontSize results in broken rendering */
             font = TTF_OpenFont(game.settings.fontPath, FONT_SIZE);
             font_small = TTF_OpenFont(game.settings.fontPath, FONT_SIZE/2);  
@@ -200,7 +206,7 @@ int main(int argc, char **argv)
                 exit(EXIT_FAILURE);
             }
 
-            curr_fontsize = FONT_SIZE;
+            displayed_fontsize = FONT_SIZE;
         }
 
 
@@ -217,7 +223,8 @@ int main(int argc, char **argv)
         SDL_RenderClear(renderer);
         render_game(renderer, &game, window, font, font_small);
         SDL_RenderPresent(renderer);
-
+ 
+        /* limit fps */
         Uint64 frame_time = SDL_GetTicks64() - frame_start;
         if (frame_time < FPS_DELTA) {
             SDL_Delay(FPS_DELTA-frame_time);

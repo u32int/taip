@@ -18,12 +18,14 @@
 
 extern int FONT_SIZE;
 
+extern int win_w, win_h;
+
 typedef struct {
     const char* prettyName;
     SDL_Color bg;
-    SDL_Color primary;
-    SDL_Color error;
     SDL_Color dim;
+    SDL_Color error;
+    SDL_Color primary;
 } Theme;
 
 static Theme themes[] = {

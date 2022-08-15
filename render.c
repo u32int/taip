@@ -7,8 +7,6 @@
 #include "render.h"
 #include "logic.h"
 
-static int win_w, win_h;
-
 static struct TextFlags {
     bool center;
     bool wrap;
@@ -72,9 +70,6 @@ void render_timer(SDL_Renderer *renderer, game_t *game, TTF_Font *font)
 void render_game(SDL_Renderer *renderer, game_t *game, SDL_Window *window,
                  TTF_Font *font, TTF_Font *font_small)
 {
-
-    SDL_GetWindowSize(window, &win_w, &win_h);
-
     switch (game->state) {
     case Idle:
         if (game->settings.showHints)
@@ -184,7 +179,7 @@ Keybindings: \n\
                     font_small, game->theme->dim, game->theme->bg,
                     "Press ESC to go back.");
         break;
-    case Settings:
+    case Settings: {
         char counter_text[16];
 
         text_flags.center = false;
@@ -201,15 +196,17 @@ Keybindings: \n\
                             curr_set.label);
 
             switch(curr_set.type) {
-            case BoolSwitch:
+            case BoolSwitch: {
                 render_text(renderer,
                             win_w/2, FONT_SIZE*i,
                             font_small,
-                            *(bool*)curr_set.settingPtr ? game->theme->primary : game->theme->dim,
+                            *(bool*)curr_set.settingPtr ?
+                            game->theme->primary : game->theme->dim,
                             game->theme->bg,
                             *(bool*)curr_set.settingPtr ? "True" : "False");
                 break;
-            case IntSlider:
+            }
+            case IntSlider: {
                 int slider_length = FONT_SIZE*3;
                 float slider_progress = ((float)*(int*)curr_set.settingPtr)/curr_set.intMax;
 
@@ -246,8 +243,8 @@ Keybindings: \n\
                                      win_w/2-FONT_SIZE/3, FONT_SIZE*i+FONT_SIZE/3,
                                      win_w/2-FONT_SIZE/8, FONT_SIZE*i+3,
                                      win_w/2-FONT_SIZE/8, FONT_SIZE*i+FONT_SIZE/2,
-                                     game->theme->dim.r, game->theme->dim.g, game->theme->dim.b,
-                                     game->theme->dim.a);
+                                     game->theme->dim.r, game->theme->dim.g,
+                                     game->theme->dim.b, game->theme->dim.a);
                 }
 
                 if(*(int*)curr_set.settingPtr != curr_set.intMax) {
@@ -258,11 +255,12 @@ Keybindings: \n\
                                      win_w/2+FONT_SIZE/3+ttxt_w, FONT_SIZE*i+FONT_SIZE/3,
                                      win_w/2+FONT_SIZE/8+ttxt_w, FONT_SIZE*i+3,
                                      win_w/2+FONT_SIZE/8+ttxt_w, FONT_SIZE*i+FONT_SIZE/2,
-                                     game->theme->dim.r, game->theme->dim.g, game->theme->dim.b,
-                                     game->theme->dim.a);
+                                     game->theme->dim.r, game->theme->dim.g,
+                                     game->theme->dim.b, game->theme->dim.a);
                 }
 
                 break;
+            }
             case ThemeSelector:
                 render_text(renderer,
                             win_w/2, FONT_SIZE*i,
@@ -274,8 +272,8 @@ Keybindings: \n\
                                      win_w/2-FONT_SIZE/3, FONT_SIZE*i+FONT_SIZE/4+3,
                                      win_w/2-FONT_SIZE/12, FONT_SIZE*i+3,
                                      win_w/2-FONT_SIZE/12, FONT_SIZE*i+FONT_SIZE/2+3,
-                                     game->theme->dim.r, game->theme->dim.g, game->theme->dim.b,
-                                     game->theme->dim.a);
+                                     game->theme->dim.r, game->theme->dim.g,
+                                     game->theme->dim.b, game->theme->dim.a);
                 }
 
                 if(game->selTheme != ThemesCount-1) {
@@ -286,8 +284,8 @@ Keybindings: \n\
                                      win_w/2+FONT_SIZE/3+ttxt_w, FONT_SIZE*i+FONT_SIZE/4+3,
                                      win_w/2+FONT_SIZE/12+ttxt_w, FONT_SIZE*i+3,
                                      win_w/2+FONT_SIZE/12+ttxt_w, FONT_SIZE*i+FONT_SIZE/2+3,
-                                     game->theme->dim.r, game->theme->dim.g, game->theme->dim.b,
-                                     game->theme->dim.a);
+                                     game->theme->dim.r, game->theme->dim.g,
+                                     game->theme->dim.b, game->theme->dim.a);
                 }
                 break;
             default:
@@ -302,6 +300,7 @@ Keybindings: \n\
                     font_small, game->theme->dim, game->theme->bg,
                     "Press ESC to go back.");
         break;
+    }
     default: {};
         
     }

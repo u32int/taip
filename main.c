@@ -53,7 +53,7 @@ Options:\n\
         stdout);
 }
 
-void parse_args(int argc, char **argv, game_t *game)
+void parse_args(int argc, char **argv)
 {
     /* using getopt, for more info see
        https://www.gnu.org/software/libc/manual/html_node/Getopt-Long-Options.html */
@@ -239,6 +239,7 @@ int main(int argc, char **argv)
     SDL_DestroyWindow(window);
     SDL_Quit();
     TTF_CloseFont(font);
+    TTF_CloseFont(font_small);
     
     return EXIT_SUCCESS;
 }

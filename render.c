@@ -40,9 +40,8 @@ void render_text(SDL_Renderer *renderer, int x, int y,
         exit(1);
     }
 
-    int txt_w, txt_h;
-    txt_w = text_surface->w;
-    txt_h = text_surface->h;
+    int txt_w = text_surface->w;
+    int txt_h = text_surface->h;
 
     if (text_flags.center) {
         x += win_w/2-txt_w/2;
@@ -113,8 +112,7 @@ void render_results(SDL_Renderer *renderer, game_t *game,
 void render_help(SDL_Renderer *renderer, game_t *game, 
                         TTF_Font *font, TTF_Font *font_small)
 {
-    text_flags.wrap = true ;
-    text_flags.center = false;
+    text_flags.wrap = true;
     const char* help_text;
     help_text = "taip is a simple typing game written in C and SDL2.\n\n\
 To begin playing, simply start typing!\n\n\
@@ -124,11 +122,10 @@ Alt-r:    Restart game\n\
 Alt-s:    Enter the settings menu\n\
 ";
 
-    render_text(renderer, win_w/4, FONT_SIZE,
+    render_text(renderer, 0, -win_h/3,
                 font_small, game->theme->primary, game->theme->bg, help_text);
 
     text_flags.wrap = false;
-    text_flags.center = true;
 
     render_text(renderer,
                 0, win_h/2-FONT_SIZE,
@@ -318,9 +315,7 @@ void render_game(SDL_Renderer *renderer, game_t *game,
 
         int txt_w, txt_h;
         TTF_SizeUTF8(font, game->txtBuff[0], &txt_w, &txt_h);
-        if (txt_w % 2 != 0) txt_w++; /* magic to make it divide nicely and prevent 
-                                        the letters from displacing because of ints */
-        
+
         if (game->lineProgress == 0) {
             render_caret(renderer, game, win_w/2-txt_w/2, win_h/2-txt_h/2-2);    
         } else {
@@ -328,8 +323,8 @@ void render_game(SDL_Renderer *renderer, game_t *game,
             memcpy(progress_text, game->txtBuff[0], game->lineProgress);
             int ptxt_w, ptxt_h;
             TTF_SizeUTF8(font, progress_text, &ptxt_w, &ptxt_h);
-            if (ptxt_w % 2 != 0) ptxt_w--;
-
+            if (ptxt_w % 2 != 0) ptxt_w--;  /* magic to make it divide nicely and prevent
+                                               the letters from displacing because of ints*/
             render_caret(renderer, game, win_w/2-txt_w/2+ptxt_w,
                          win_h/2-txt_h/2-2);
 

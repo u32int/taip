@@ -164,7 +164,6 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
         case SDLK_q:
             game->state = Idle;
             reset_game(game);
-            lock_input = true;
             break;
         case SDLK_k:
         case SDLK_UP:

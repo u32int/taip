@@ -295,11 +295,21 @@ void render_game(SDL_Renderer *renderer, game_t *game,
 {
     switch (game->state) {
     case Idle:
-        if (game->settings.showHints)
+        if (game->settings.showHints) {
+            text_flags.center = false;
+
             render_text(renderer,
-                        0, win_h/2-FONT_SIZE,
+                        25, 15,
+                        font_small, game->theme->primary, game->theme->bg,
+                        "?");
+
+            render_text(renderer,
+                        25+FONT_SIZE/2, 15,
                         font_small, game->theme->dim, game->theme->bg,
-                        "Press alt-h for help.");
+                        "(alt-h)");
+
+            text_flags.center = true;
+        }
         // fall through
     case InProgress:
         /* render dim text first, so we can draw progress over it later*/

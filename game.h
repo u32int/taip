@@ -17,6 +17,9 @@
 #define FPS_DELTA (1000/FPS_CAP)
 
 extern int FONT_SIZE;
+#define FONT_SIZE_MIN 16
+#define FONT_SIZE_MAX 60
+
 extern int win_w, win_h;
 
 typedef struct {

@@ -10,11 +10,6 @@
   TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
   OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_keycode.h>
-#include <SDL2/SDL_stdinc.h>
-#include <SDL2/SDL_timer.h>
-#include <SDL2/SDL_video.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -111,8 +106,8 @@ int main(int argc, char **argv)
               .label = "Font Size",
               .settingPtr = &FONT_SIZE,
               .type = IntSlider,
-              .intMax = 60,
-              .intMin = 16,
+              .intMax = FONT_SIZE_MAX,
+              .intMin = FONT_SIZE_MIN,
             },
             {
               .label = "Theme",

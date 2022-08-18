@@ -118,11 +118,11 @@ void render_help(SDL_Renderer *renderer, game_t *game,
 To begin playing, simply start typing!\n\n\
 Keybindings: \n\
 Alt-h:    Show this screen\n\
-Alt-r:    Restart game\n\
+Alt-r:     Restart game\n\
 Alt-s:    Enter the settings menu\n\
 ";
 
-    render_text(renderer, 0, -win_h/3,
+    render_text(renderer, win_w/12, -win_h/3,
                 font_small, game->theme->primary, game->theme->bg, help_text);
 
     text_flags.wrap = false;

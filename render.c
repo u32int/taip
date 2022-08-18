@@ -310,6 +310,18 @@ void render_game(SDL_Renderer *renderer, game_t *game,
 
             text_flags.center = true;
         }
+
+        /* Temporary until other modes are actually implemented */
+        render_text(renderer,
+                    0, -(TEXT_LINES+1)*FONT_SIZE,
+                    font_small, game->theme->primary, game->theme->bg,
+                    "Time");
+
+        render_text(renderer,
+                    0, -(TEXT_LINES)*FONT_SIZE-5,
+                    font_small, game->theme->dim, game->theme->bg,
+                    wordlists[game->settings.selWordlist].prettyName);
+
         // fall through
     case InProgress:
         /* render dim text first, so we can draw progress over it later*/

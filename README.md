@@ -1,6 +1,6 @@
 <h1 align="center">taip</h1>
 
-A typing practice program written in C using SDL2. Visually inspired by projects like [monkeytype](https://github.com/monkeytypegame/monkeytype). It aims to be minimal on resources and unlike most modern typing programs be a desktop first application, usable without access to the internet.
+A typing practice program written in C using SDL2. Visually inspired by projects like [monkeytype](https://github.com/monkeytypegame/monkeytype). It aims to be minimal on resources and unlike most modern typing programs, be a desktop first application - usable without access to the internet.
 
 <img title="" src="img/preview1.png" alt="">
 
@@ -21,7 +21,7 @@ To build the project, use the following commands.
 mkdir build && cd build && cmake .. && make
 ```
 
-To run the project, execute the 'main' binary file
+To run the project, execute the 'taip' binary file
 
 ```bash
 ./taip

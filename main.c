@@ -103,6 +103,13 @@ int main(int argc, char **argv)
               .intMin = 5,
             },
             {
+              .label = "Words per line",
+              .settingPtr = &game.settings.wordsPerLine,
+              .type = IntCounter,
+              .intMax = 15,
+              .intMin = 2,
+            },
+            {
               .label = "Font Size",
               .settingPtr = &FONT_SIZE,
               .type = IntSlider,

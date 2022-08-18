@@ -17,6 +17,7 @@ void init_game(game_t *game)
     game->settings.timeModeSeconds = 30;
     game->settings.wordModeWords = 50;
     game->settings.showHints = true;
+    game->settings.wordsPerLine = 5;
     game->settings.selWordlist = 0;
     game->settings.fontPath = "../fonts/LiberationSans-Regular.ttf";
 
@@ -27,7 +28,8 @@ void init_game(game_t *game)
 void reset_game(game_t *game)
 {
     for (int i = 0; i < TEXT_LINES; ++i) {
-        rand_line(game, i, wordlists[game->settings.selWordlist].filePath, 5);
+        rand_line(game, i, wordlists[game->settings.selWordlist].filePath,
+                  game->settings.wordsPerLine);
     }
     game->state = Idle;
     game->lineLen = strlen(game->txtBuff[0]);
@@ -50,5 +52,6 @@ void cycle_lines(game_t *game)
     game->lineProgress = 0;
 
     game->errorIndex = -1;
-    rand_line(game, TEXT_LINES-1, wordlists[game->settings.selWordlist].filePath, 5);
+    rand_line(game, TEXT_LINES-1, wordlists[game->settings.selWordlist].filePath,
+              game->settings.wordsPerLine);
 }

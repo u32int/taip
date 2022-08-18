@@ -160,8 +160,10 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
         break;
     case Settings:
         switch(key) {
-        case SDLK_ESCAPE:
         case SDLK_q:
+            lock_input = true;
+            // fall through
+        case SDLK_ESCAPE:
             game->state = Idle;
             reset_game(game);
             break;

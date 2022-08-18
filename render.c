@@ -318,7 +318,7 @@ void render_game(SDL_Renderer *renderer, game_t *game,
                     "Time");
 
         render_text(renderer,
-                    0, -(TEXT_LINES)*FONT_SIZE-5,
+                    0, -(TEXT_LINES)*FONT_SIZE-FONT_SIZE/3,
                     font_small, game->theme->dim, game->theme->bg,
                     wordlists[game->settings.selWordlist].prettyName);
 

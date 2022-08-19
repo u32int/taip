@@ -157,6 +157,8 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
     case Help:
         if (mod == KMOD_NONE && key == SDLK_ESCAPE)
             game->state = Idle;
+        else if (mod == KMOD_LALT && key == SDLK_s)
+            game->state = Settings;
         break;
     case Settings:
         switch(key) {

@@ -20,6 +20,12 @@ extern int FONT_SIZE;
 #define FONT_SIZE_MIN 16
 #define FONT_SIZE_MAX 60
 
+#define TIMEMODESECONDS_MIN 5
+#define TIMEMODESECONDS_MAX 240
+
+#define WORDSPERLINE_MIN 2
+#define WORDSPERLINE_MAX 15
+
 extern int win_w, win_h;
 
 typedef struct {
@@ -87,17 +93,6 @@ typedef enum {
 } Mode;
 
 typedef struct {
-    bool showHints;
-    int timeModeSeconds;
-    int wordModeWords;
-
-    int selTheme;
-    int selWordlist;
-
-    const char *fontPath;
-} GameSettings;
-
-typedef struct {
     int errors;
     int totalCharCount;
 } TestStats;
@@ -129,6 +124,19 @@ typedef struct {
         };
     };
 } VisibleSetting;
+
+typedef struct {
+    bool showHints;
+    bool focusMode;
+    int wordsPerLine;
+    int timeModeSeconds;
+    int wordModeWords;
+    
+    int selTheme;
+    int selWordlist;
+
+    const char *fontPath;
+} GameSettings;
 
 typedef struct {
     char txtBuff[TEXT_LINES][256];

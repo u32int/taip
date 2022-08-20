@@ -94,20 +94,29 @@ int main(int argc, char **argv)
               .type = BoolSwitch,
             },
             {
+                /* When true, hides most additional information like currently selected
+                   mode and wordlist in Idle mode. */
+              .label = "Focus mode",
+              .settingPtr = &game.settings.focusMode,
+              .type = BoolSwitch,
+            },
+            {
                 /* A counter is probably not the best idea.
                    Ideally this would be a text box accepting only valid numbers */
               .label = "TimeMode seconds",
               .settingPtr = &game.settings.timeModeSeconds,
               .type = IntCounter,
-              .intMax = 240,
-              .intMin = 5,
+              .intMax = TIMEMODESECONDS_MAX,
+              .intMin = TIMEMODESECONDS_MIN,
+              .intStep = 5,
             },
             {
               .label = "Words per line",
               .settingPtr = &game.settings.wordsPerLine,
               .type = IntCounter,
-              .intMax = 15,
-              .intMin = 2,
+              .intMax = WORDSPERLINE_MAX,
+              .intMin = WORDSPERLINE_MIN,
+              .intStep = 1,
             },
             {
               .label = "Font Size",
@@ -115,6 +124,7 @@ int main(int argc, char **argv)
               .type = IntSlider,
               .intMax = FONT_SIZE_MAX,
               .intMin = FONT_SIZE_MIN,
+              .intStep = 1,
             },
             {
               .label = "Theme",

@@ -230,13 +230,13 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
             case SDLK_h:
             case SDLK_LEFT:
                 *(int*)curr_setting->settingPtr =
-                    clamp_int(*(int*)curr_setting->settingPtr-1,
+                    clamp_int(*(int*)curr_setting->settingPtr-curr_setting->intStep,
                               curr_setting->intMin, curr_setting->intMax);
                 break;
             case SDLK_l:
             case SDLK_RIGHT:
                 *(int*)curr_setting->settingPtr =
-                    clamp_int(*(int*)curr_setting->settingPtr+1,
+                    clamp_int(*(int*)curr_setting->settingPtr+curr_setting->intStep,
                               curr_setting->intMin, curr_setting->intMax);
                 break;
             default: {}

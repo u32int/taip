@@ -148,7 +148,7 @@ int main(int argc, char **argv)
     }
 
     init_game(&game);
-    parse_args(argc, argv, &game); /* args override defaults */
+    parse_args(argc, argv); /* args override defaults */
     
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         fprintf(stderr, "sdl2 initialzation error: %s\n", SDL_GetError());

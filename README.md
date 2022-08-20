@@ -27,6 +27,10 @@ To run the project, execute the 'taip' binary file
 ./taip
 ```
 
+Optionally, there is an example config file included.
+
+On Linux, taip wil look for it in ```/home/USER/.config/taip/taip.conf```
+
 ### Disclaimer
 
 This project is far from complete and currently in a "minimum viable product" state.

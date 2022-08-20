@@ -23,6 +23,8 @@
 #include "game.h"
 #include "render.h"
 #include "logic.h"
+#include "config.h"
+#include "util.h"
 
 #define WINDOW_NAME "taip"
 
@@ -148,8 +150,16 @@ int main(int argc, char **argv)
     }
 
     init_game(&game);
-    parse_args(argc, argv, &game); /* args override defaults */
-    
+    parse_args(argc, argv); 
+
+    char config_dir[256];
+#if defined(__linux__) /* TODO add cross-platform support */
+    snprintf(config_dir, 256, "%s/.config/taip/taip.conf", getenv("HOME"));
+#else
+    config_dir[0] = 0;
+#endif
+    parse_config(&game, config_dir);
+
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         fprintf(stderr, "sdl2 initialzation error: %s\n", SDL_GetError());
         return EXIT_FAILURE;

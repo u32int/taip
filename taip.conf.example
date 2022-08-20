@@ -1,0 +1,9 @@
+# Sample config file with mostly default values
+# syntax - SYMBOL = VALUE
+# boolean values are lowercase 'true' and 'false'
+# lines starting with '#' and empty lines are ignored
+
+fontSize = 42
+wordsPerLine = 6
+showHints = true
+focusMode = false

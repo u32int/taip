@@ -114,7 +114,8 @@ void render_help(SDL_Renderer *renderer, game_t *game,
 {
     text_flags.wrap = true;
     const char* help_text;
-    help_text = "taip is a simple typing game written in C and SDL2.\n\n\
+    help_text = "taip is a simple typing game written in C and SDL2.\n\
+This application is free software, distributed under the MIT license.\n\n\
 To begin playing, simply start typing!\n\n\
 Keybindings: \n\
 Alt-h:    Show this screen\n\
@@ -246,8 +247,6 @@ void render_settings(SDL_Renderer *renderer, game_t *game,
                                  game->theme->dim.b, game->theme->dim.a);
             }
             break;
-            /* this is kind of just code duplication, although it does make rendering
-               different settings in different ways easier */
         case WordlistSelector:
              render_text(renderer,
                         win_w/2, FONT_SIZE*i,

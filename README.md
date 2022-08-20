@@ -8,6 +8,12 @@ A typing practice program written in C using SDL2. Visually inspired by projects
 
 ### Building and running
 
+**Supported Platforms:** Linux
+
+note: SDL2 itself is cross-platform. If are on a different platform, porting it is probably very possible!
+
+
+
 **Dependencies**
 
 - cmake

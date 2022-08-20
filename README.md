@@ -10,7 +10,7 @@ A typing practice program written in C using SDL2. Visually inspired by projects
 
 **Supported Platforms:** Linux
 
-note: SDL2 itself is cross-platform. If are on a different platform, porting it is probably very possible!
+note: SDL2 itself is cross-platform. If you are on a different platform, porting it is probably very possible!
 
 
 

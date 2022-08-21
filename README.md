@@ -6,13 +6,13 @@ A typing practice program written in C using SDL2. Visually inspired by projects
 
 <img title="" src="img/preview2.png" alt="">
 
+<img title="" src="img/preview3.png" alt="">
+
 ### Building and running
 
 **Supported Platforms:** Linux
 
 note: SDL2 itself is cross-platform. If you are on a different platform, porting it is probably very possible!
-
-
 
 **Dependencies**
 

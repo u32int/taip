@@ -17,6 +17,7 @@ set(SRCS
   render.c
   logic.c
   util.c
+  config.c
 )
 
 set(HEADERS
@@ -24,6 +25,7 @@ set(HEADERS
   render.h
   logic.h
   util.h
+  config.h
 )
 
 add_executable(taip ${SRCS} ${HEADERS})

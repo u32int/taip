@@ -109,8 +109,7 @@ void render_results(SDL_Renderer *renderer, game_t *game,
                 "Press alt+r to restart.");
 }
 
-void render_help(SDL_Renderer *renderer, game_t *game, 
-                        TTF_Font *font, TTF_Font *font_small)
+void render_help(SDL_Renderer *renderer, game_t *game, TTF_Font *font_small)
 {
     text_flags.wrap = true;
     const char* help_text;
@@ -134,8 +133,7 @@ Alt-s:    Enter the settings menu\n\
                 "Press ESC to go back.");
 }
 
-void render_settings(SDL_Renderer *renderer, game_t *game, 
-                    TTF_Font *font, TTF_Font *font_small)
+void render_settings(SDL_Renderer *renderer, game_t *game,  TTF_Font *font_small)
 {
     char counter_text[16];
 
@@ -369,11 +367,11 @@ void render_game(SDL_Renderer *renderer, game_t *game,
         break;
     }
     case Help: {
-        render_help(renderer, game, font, font_small);
+        render_help(renderer, game, font_small);
         break;
     }
     case Settings: {
-        render_settings(renderer, game, font, font_small);
+        render_settings(renderer, game, font_small);
         break;
     }
     default: {};

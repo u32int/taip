@@ -13,7 +13,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h> 
+#include <string.h>
 #include <time.h>
 #include <getopt.h>
 
@@ -23,6 +23,8 @@
 #include "game.h"
 #include "render.h"
 #include "logic.h"
+#include "config.h"
+#include "util.h"
 
 #define WINDOW_NAME "taip"
 
@@ -148,8 +150,18 @@ int main(int argc, char **argv)
     }
 
     init_game(&game);
-    parse_args(argc, argv); /* args override defaults */
-    
+    parse_args(argc, argv);
+
+    char config_dir[256];
+#if defined(__linux__) /* TODO add cross-platform support */
+    snprintf(config_dir, 256, "%s/.config/taip/taip.conf", getenv("HOME"));
+#else
+    config_dir[0] = 0;
+#endif
+    parse_config(&game, config_dir);
+
+    reset_game(&game);
+
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         fprintf(stderr, "sdl2 initialzation error: %s\n", SDL_GetError());
         return EXIT_FAILURE;
@@ -161,7 +173,7 @@ int main(int argc, char **argv)
                                           SCR_WIDTH, SCR_HEIGHT,
                                           SDL_WINDOW_SHOWN);
     if (window == NULL) {
-        fprintf(stderr, "Couldn't create SDL_Window: %s\n", SDL_GetError()); 
+        fprintf(stderr, "Couldn't create SDL_Window: %s\n", SDL_GetError());
         return EXIT_FAILURE;
     }
 
@@ -169,7 +181,7 @@ int main(int argc, char **argv)
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == NULL) {
-        fprintf(stderr, "Couldn't create SDL_Renderer: %s\n", SDL_GetError()); 
+        fprintf(stderr, "Couldn't create SDL_Renderer: %s\n", SDL_GetError());
         return EXIT_FAILURE;
     }
 
@@ -180,16 +192,16 @@ int main(int argc, char **argv)
 
     int displayed_fontsize = FONT_SIZE;
     TTF_Font *font = TTF_OpenFont(game.settings.fontPath, FONT_SIZE);
-    /* TTF_SetFontsize refuses to cooperate with me, hence font_small 
+    /* TTF_SetFontsize refuses to cooperate with me, hence font_small
        this is TEMPORARY */
-    TTF_Font *font_small = TTF_OpenFont(game.settings.fontPath, FONT_SIZE/2);  
+    TTF_Font *font_small = TTF_OpenFont(game.settings.fontPath, FONT_SIZE/2);
     if (font == NULL || font_small == NULL) {
         fprintf(stderr, "Font error: %s\n", TTF_GetError());
         exit(EXIT_FAILURE);
     }
 
     SDL_Event e;
-    Uint64 frame_start; 
+    Uint64 frame_start;
     while (game.state != Quit) {
         frame_start = SDL_GetTicks64();
         while (SDL_PollEvent(&e)) {
@@ -217,7 +229,7 @@ int main(int argc, char **argv)
         if (displayed_fontsize != FONT_SIZE) {
             /* again, any attempt to use TTF_SetFontSize results in broken rendering */
             font = TTF_OpenFont(game.settings.fontPath, FONT_SIZE);
-            font_small = TTF_OpenFont(game.settings.fontPath, FONT_SIZE/2);  
+            font_small = TTF_OpenFont(game.settings.fontPath, FONT_SIZE/2);
             if (font == NULL || font_small == NULL) {
                 fprintf(stderr, "Font error: %s\n", TTF_GetError());
                 exit(EXIT_FAILURE);
@@ -240,7 +252,7 @@ int main(int argc, char **argv)
         SDL_RenderClear(renderer);
         render_game(renderer, &game, font, font_small);
         SDL_RenderPresent(renderer);
- 
+
         /* limit fps */
         Uint64 frame_time = SDL_GetTicks64() - frame_start;
         if (frame_time < FPS_DELTA) {
@@ -252,6 +264,6 @@ int main(int argc, char **argv)
     SDL_Quit();
     TTF_CloseFont(font);
     TTF_CloseFont(font_small);
-    
+
     return EXIT_SUCCESS;
 }

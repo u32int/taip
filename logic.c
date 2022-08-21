@@ -38,6 +38,8 @@ int next_char_distance(char *c)
 
 int prev_char_distance(game_t *game, char *c)
 {
+    (void) game;
+
     if (isascii(c[-1])) {
         return 1;
     }

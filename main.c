@@ -160,6 +160,8 @@ int main(int argc, char **argv)
 #endif
     parse_config(&game, config_dir);
 
+    reset_game(&game);
+
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         fprintf(stderr, "sdl2 initialzation error: %s\n", SDL_GetError());
         return EXIT_FAILURE;

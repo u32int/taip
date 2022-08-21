@@ -54,7 +54,6 @@ void parse_config(game_t *game, const char *configFilePath)
     FILE *file = fopen(configFilePath, "r");
 
     if (file == NULL) {
-        /* no config file found, return */
         return;
     }
 

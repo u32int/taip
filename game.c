@@ -23,7 +23,6 @@ void init_game(game_t *game)
     game->settings.fontPath = "../fonts/LiberationSans-Regular.ttf";
 
     set_theme(game, 0);
-    reset_game(game);
 }
 
 void reset_game(game_t *game)

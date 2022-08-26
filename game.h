@@ -34,10 +34,9 @@ typedef struct {
 } Wordlist;
 
 static const Wordlist wordlists[] = {
-    { "English (monkeytype)",    "../wordlists/mt_english200.txt" },
-    { "English 1k (monkeytype)", "../wordlists/mt_english1k.txt" },
-    { "Polish 200 (monkeytype)",  "../wordlists/mt_polish200.txt" },
-    { "C keywords",               "../wordlists/programming_c.txt" },
+    { "English 250",    "../wordlists/english250.txt" },
+    { "English 1k",   "../wordlists/english1k.txt" },
+    { "C keywords",     "../wordlists/programming_c.txt" },
 };
 
 #define WordlistCount (sizeof(wordlists)/sizeof(Wordlist))

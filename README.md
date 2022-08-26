@@ -55,4 +55,4 @@ This project is free software licensed under the MIT license. For the full text 
 
 Liberation-Sans font included in the /fonts directory is licensed under the [OFL v1.1](https://github.com/liberationfonts/liberation-fonts/blob/main/LICENSE) license.
 
-Some word lists have been adapted from the [monkeytype](https://github.com/monkeytypegame/monkeytype) codebase. These lists have been prefixed with 'mt_'.
+The default English wordlists (250, 1k) use word frequencies from <a href="https://github.com/IlyaSemenov/wikipedia-word-frequency">this repo</a> and are <a href="https://github.com/IlyaSemenov/wikipedia-word-frequency/blob/master/LICENSE">licensed under MIT</a>.

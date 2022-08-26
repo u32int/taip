@@ -114,7 +114,7 @@ void render_help(SDL_Renderer *renderer, game_t *game, TTF_Font *font_small)
     text_flags.wrap = true;
     const char* help_text;
     help_text = "taip is a simple typing game written in C and SDL2.\n\
-This application is free software, distributed under the MIT license.\n\n\
+This application is free software, licensed under the MIT license.\n\n\
 To begin playing, simply start typing!\n\n\
 Keybindings: \n\
 Alt-h:    Show this screen\n\

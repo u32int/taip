@@ -36,6 +36,7 @@ typedef struct {
 static const Wordlist wordlists[] = {
     { "English 250",    "../wordlists/english250.txt" },
     { "English 1k",   "../wordlists/english1k.txt" },
+    { "Polish 250",   "../wordlists/polish250.txt" },
     { "C keywords",     "../wordlists/code-c.txt" },
 };
 

@@ -36,7 +36,7 @@ typedef struct {
 static const Wordlist wordlists[] = {
     { "English 250",    "../wordlists/english250.txt" },
     { "English 1k",   "../wordlists/english1k.txt" },
-    { "C keywords",     "../wordlists/programming_c.txt" },
+    { "C keywords",     "../wordlists/code-c.txt" },
 };
 
 #define WordlistCount (sizeof(wordlists)/sizeof(Wordlist))

@@ -55,4 +55,10 @@ This project is free software licensed under the MIT license. For the full text 
 
 Liberation-Sans font included in the /fonts directory is licensed under the [OFL v1.1](https://github.com/liberationfonts/liberation-fonts/blob/main/LICENSE) license.
 
-The default English wordlists (250, 1k) use word frequencies from <a href="https://github.com/IlyaSemenov/wikipedia-word-frequency">this repo</a> and are <a href="https://github.com/IlyaSemenov/wikipedia-word-frequency/blob/master/LICENSE">licensed under MIT</a>.
+**Word lists**
+
+The default English word lists (250, 1k) use word frequencies from <a href="https://github.com/IlyaSemenov/wikipedia-word-frequency">this repo</a> and are <a href="https://github.com/IlyaSemenov/wikipedia-word-frequency/blob/master/LICENSE">licensed under MIT</a>.
+
+The Polish list uses words from <a href="https://en.wiktionary.org/wiki/Wiktionary:Frequency_lists/Polish_wordlist">this wiktionary page</a>, which I believe is licensed under <a href="https://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0</a>.
+
+Notable modifications to these lists include removing words widely considered offensive as well as duplicate, similar and one-letter "words".

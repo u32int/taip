@@ -39,7 +39,7 @@ To run the project, execute the 'taip' binary file
 
 Optionally, there is an example config file included.
 
-On Linux, taip wil look for it in ```/home/USER/.config/taip/taip.conf```
+On Linux and FreeBSD, taip wil look for it in ```/home/USER/.config/taip/taip.conf```
 
 ### Disclaimer
 

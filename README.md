@@ -10,7 +10,7 @@ A typing practice program written in C using SDL2. Visually inspired by projects
 
 ### Building and running
 
-**Supported Platforms:** Linux
+**Supported Platforms:** Linux, FreeBSD
 
 note: SDL2 itself is cross-platform. If you are on a different platform, porting it is probably very possible!
 
@@ -20,6 +20,10 @@ note: SDL2 itself is cross-platform. If you are on a different platform, porting
 - sdl2
 - sdl2\_ttf
 - sdl2\_gfx
+
+
+*FreeBSD*
+- pkgconf
 
 To build the project, use the following commands.
 

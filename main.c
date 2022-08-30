@@ -153,7 +153,7 @@ int main(int argc, char **argv)
     parse_args(argc, argv);
 
     char config_dir[256];
-#if defined(__linux__) /* TODO add cross-platform support */
+#if defined(__linux__) || defined(__FreeBSD__) /* TODO add cross-platform support */
     snprintf(config_dir, 256, "%s/.config/taip/taip.conf", getenv("HOME"));
 #else
     config_dir[0] = 0;

@@ -29,4 +29,8 @@ set(HEADERS
 )
 
 add_executable(taip ${SRCS} ${HEADERS})
-target_link_libraries(taip ${SDL2_LIBRARIES} ${SDL2TTF_LIBRARIES} ${SDL2GFX_LIBRARIES})
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    target_link_libraries(taip ${SDL2_LIBRARIES} ${SDL2TTF_LIBRARIES} ${SDL2GFX_LIBRARIES})
+elseif(CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
+    target_link_libraries(taip -L/usr/local/lib ${SDL2_LIBRARIES} ${SDL2TTF_LIBRARIES} ${SDL2GFX_LIBRARIES})
+endif()

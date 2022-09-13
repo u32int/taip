@@ -282,8 +282,8 @@ void rand_line(game_t *game, int index, const char* wordlist_name, const int wor
     rewind(file);
 
     /* generate words */
-    char *text = (char*)calloc(256, sizeof(char));
-    char *wbuff = (char*)calloc(32, sizeof(char));
+    char text[256] = { 0 };
+    char wbuff[32] = { 0 };
     char *curr = text;
     for(int i = 0; i < words; ++i) {
         rand_word(file, file_size, wbuff);
@@ -295,9 +295,6 @@ void rand_line(game_t *game, int index, const char* wordlist_name, const int wor
     }
 
     memcpy(game->txtBuff[index], text, 256);
-
-    free(text);
-    free(wbuff);
 
     fclose(file);
 }

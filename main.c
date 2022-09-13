@@ -73,11 +73,9 @@ void parse_args(int argc, char **argv)
         case 'h':
             print_help_stdout();
             exit(0);
-            break;
         case 'v':
             print_info_stdout();
             exit(0);
-            break;
         default:
             exit(1);
         }
@@ -142,10 +140,7 @@ int main(int argc, char **argv)
         },
         .selSetting = 0,
     };
-    int i = 0;
-    VisibleSetting *s;
-    game.settingsCount = 0;
-    while((s = &game.visibleSettings[++i]) && s->settingPtr != NULL) {
+    while(game.visibleSettings[game.settingsCount+1].settingPtr != NULL) {
         game.settingsCount++;
     }
 

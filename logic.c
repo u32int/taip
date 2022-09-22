@@ -250,7 +250,7 @@ void handle_key(game_t *game, SDL_Keycode key, SDL_Keymod mod)
     }
 }
 
-void rand_word(FILE *file, int file_size, char *word_buff)
+size_t rand_word(FILE *file, int file_size, char *word_buff)
 {
 
     /* fseek to somewhere in the file, find the nearest '\n',
@@ -264,8 +264,8 @@ void rand_word(FILE *file, int file_size, char *word_buff)
             break;
     }
     size_t buffsize = 32;
-    getline(&word_buff, &buffsize, file);
-    word_buff[strcspn(word_buff, "\n")] = '\0'; /* remove trailing newline */
+    /* getline returns the amount of chars it read (-1 to exclude '\n') */
+    return getline(&word_buff, &buffsize, file) - 1;
 }
 
 void rand_line(game_t *game, int index, const char* wordlist_name, const int words)
@@ -286,9 +286,8 @@ void rand_line(game_t *game, int index, const char* wordlist_name, const int wor
     char wbuff[32] = { 0 };
     char *curr = text;
     for(int i = 0; i < words; ++i) {
-        rand_word(file, file_size, wbuff);
-        size_t wlen = strlen(wbuff);
-        memcpy(curr, wbuff, wlen);
+        size_t wlen = rand_word(file, file_size, wbuff);
+        strncpy(curr, wbuff, 256-(curr-text));
         curr += wlen;
         *curr = ' ';
         curr++;

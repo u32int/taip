@@ -28,7 +28,7 @@
 
 #define WINDOW_NAME "taip"
 
-int FONT_SIZE = 42;
+int FONT_SIZE = 44;
 int win_w, win_h;
 
 void print_info_stdout()

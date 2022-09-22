@@ -129,6 +129,7 @@ typedef struct {
 typedef struct {
     bool showHints;
     bool focusMode;
+    bool punctuation;
     int wordsPerLine;
     int timeModeSeconds;
     int wordModeWords;

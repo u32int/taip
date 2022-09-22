@@ -18,6 +18,7 @@ void init_game(game_t *game)
     game->settings.wordModeWords = 50;
     game->settings.showHints = true;
     game->settings.focusMode = false;
+    game->settings.punctuation = false;
     game->settings.wordsPerLine = 5;
     game->settings.selWordlist = 0;
     game->settings.fontPath = "../fonts/LiberationSans-Regular.ttf";

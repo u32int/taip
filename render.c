@@ -61,8 +61,8 @@ void render_text(SDL_Renderer *renderer, int x, int y,
 
 void render_timer(SDL_Renderer *renderer, game_t *game, TTF_Font *font)
 {
-    char timerText[16];
-    snprintf(timerText, 16, "%lu", (game->timers.timeEnd - SDL_GetTicks64())/1000+1);
+    char timerText[18];
+    snprintf(timerText, 18, "%lu", (game->timers.timeEnd - SDL_GetTicks64())/1000+1);
 
     render_text(renderer, 0, (-TEXT_LINES/2-1)*FONT_SIZE,
                        font, game->theme->primary, game->theme->bg,

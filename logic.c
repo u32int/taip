@@ -282,12 +282,32 @@ void rand_line(game_t *game, int index, const char* wordlist_name, const int wor
     rewind(file);
 
     /* generate words */
+    static bool capitalize_next = false;
+
     char text[256] = { 0 };
     char wbuff[32] = { 0 };
     char *curr = text;
     for(int i = 0; i < words; ++i) {
         size_t wlen = rand_word(file, file_size, wbuff);
         strncpy(curr, wbuff, 256-(curr-text));
+
+        if (game->settings.punctuation) {
+            if (capitalize_next) {
+                *curr = toupper(*curr);
+                capitalize_next = false;
+            } else {
+                int rand_punc = rand() % 10;
+                if (rand_punc <= 2) {
+                    text[curr-text+wlen] = '.';
+                    capitalize_next = true;
+                    wlen++;
+                } else if (rand_punc <= 3) {
+                    text[curr-text+wlen] = ',';
+                    wlen++;
+                }
+            }
+        }
+
         curr += wlen;
         *curr = ' ';
         curr++;

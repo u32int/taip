@@ -101,6 +101,11 @@ int main(int argc, char **argv)
               .type = BoolSwitch,
             },
             {
+              .label = "Punctuation",
+              .settingPtr = &game.settings.punctuation,
+              .type = BoolSwitch,
+            },
+            {
                 /* A counter is probably not the best idea.
                    Ideally this would be a text box accepting only valid numbers */
               .label = "TimeMode seconds",

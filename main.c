@@ -92,13 +92,6 @@ int main(int argc, char **argv)
               .type = BoolSwitch,
             },
             {
-                /* When true, hides most additional information like currently selected
-                   mode and wordlist in Idle mode. */
-              .label = "Focus mode",
-              .settingPtr = &game.settings.focusMode,
-              .type = BoolSwitch,
-            },
-            {
               .label = "Punctuation",
               .settingPtr = &game.settings.punctuation,
               .type = BoolSwitch,

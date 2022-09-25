@@ -309,17 +309,15 @@ void render_game(SDL_Renderer *renderer, game_t *game,
         }
 
         /* Temporary until other modes are actually implemented */
-        if (!game->settings.focusMode) {
-            render_text(renderer,
-                        0, -(TEXT_LINES+1)*game->settings.fontSize,
-                        font_small, game->theme->primary, game->theme->bg,
-                        "Time");
+        render_text(renderer,
+                    0, -(TEXT_LINES+1)*game->settings.fontSize,
+                    font_small, game->theme->primary, game->theme->bg,
+                    "Time");
 
-            render_text(renderer,
-                        0, -(TEXT_LINES)*game->settings.fontSize-game->settings.fontSize/3,
-                        font_small, game->theme->dim, game->theme->bg,
-                        wordlists[game->settings.selWordlist].prettyName);
-        }
+        render_text(renderer,
+                    0, -(TEXT_LINES)*game->settings.fontSize-game->settings.fontSize/3,
+                    font_small, game->theme->dim, game->theme->bg,
+                    wordlists[game->settings.selWordlist].prettyName);
 
         // fall through
     case InProgress:

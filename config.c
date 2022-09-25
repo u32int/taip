@@ -79,8 +79,6 @@ void parse_config(game_t *game, const char *configFilePath)
                                                     WORDSPERLINE_MIN, WORDSPERLINE_MAX);
         } else if (parse_opt("showHints", buff, rvalue_buff)) {
             set_bool_from_rvalue(&game->settings.showHints, rvalue_buff);
-        } else if (parse_opt("focusMode", buff, rvalue_buff)) {
-            set_bool_from_rvalue(&game->settings.focusMode, rvalue_buff);
         } else {
             fprintf(stderr, "taip: Config parse error - invalid line/option\nline %d: %s",
                     curr_line, buff);

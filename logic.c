@@ -282,7 +282,8 @@ void rand_line(game_t *game, int index, const char* wordlist_name, const int wor
     rewind(file);
 
     /* generate words */
-    static bool capitalize_next = false;
+    static bool capitalize_next;
+    capitalize_next = index == 0 ? true : false;
 
     char text[256] = { 0 };
     char wbuff[32] = { 0 };

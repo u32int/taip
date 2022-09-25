@@ -190,8 +190,6 @@ int main(int argc, char **argv)
 
     int displayed_fontsize = game.settings.fontSize;
     TTF_Font *font = TTF_OpenFont(game.settings.fontPath, game.settings.fontSize);
-    /* TTF_SetFontsize refuses to cooperate with me, hence font_small
-       this is TEMPORARY */
     TTF_Font *font_small = TTF_OpenFont(game.settings.fontPath, game.settings.fontSize/2);
     if (font == NULL || font_small == NULL) {
         fprintf(stderr, "Font error: %s\n", TTF_GetError());
@@ -225,17 +223,10 @@ int main(int argc, char **argv)
         }
 
         if (displayed_fontsize != game.settings.fontSize) {
-            /* again, any attempt to use TTF_SetFontSize results in broken rendering */
-            font = TTF_OpenFont(game.settings.fontPath, game.settings.fontSize);
-            font_small = TTF_OpenFont(game.settings.fontPath, game.settings.fontSize/2);
-            if (font == NULL || font_small == NULL) {
-                fprintf(stderr, "Font error: %s\n", TTF_GetError());
-                exit(EXIT_FAILURE);
-            }
-
+            TTF_SetFontSize(font, game.settings.fontSize);
+            TTF_SetFontSize(font_small, game.settings.fontSize/2);
             displayed_fontsize = game.settings.fontSize;
         }
-
 
         /* if time is up in timeMode, show the results screen */
         if (game.state == InProgress && game.mode == Time) {

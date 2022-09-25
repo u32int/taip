@@ -27,15 +27,13 @@
 #include "util.h"
 
 #define WINDOW_NAME "taip"
-
-int FONT_SIZE = 44;
 int win_w, win_h;
 
 void print_info_stdout()
 {
   fprintf(stdout,
 "taip v%s\n\
-This application is free software, distributed under the MIT license.\n\
+This application is free software, licensed under the MIT license.\n\
 ",
           VERSION);
 }
@@ -125,7 +123,7 @@ int main(int argc, char **argv)
             },
             {
               .label = "Font Size",
-              .settingPtr = &FONT_SIZE,
+              .settingPtr = &game.settings.fontSize,
               .type = IntSlider,
               .intMax = FONT_SIZE_MAX,
               .intMin = FONT_SIZE_MIN,
@@ -153,7 +151,7 @@ int main(int argc, char **argv)
     parse_args(argc, argv);
 
     char config_dir[256];
-#if defined(__linux__) || defined(__FreeBSD__) /* TODO add cross-platform support */
+#if defined(__linux__) || defined(__FreeBSD__)
     snprintf(config_dir, 256, "%s/.config/taip/taip.conf", getenv("HOME"));
 #else
     config_dir[0] = 0;
@@ -190,11 +188,11 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    int displayed_fontsize = FONT_SIZE;
-    TTF_Font *font = TTF_OpenFont(game.settings.fontPath, FONT_SIZE);
+    int displayed_fontsize = game.settings.fontSize;
+    TTF_Font *font = TTF_OpenFont(game.settings.fontPath, game.settings.fontSize);
     /* TTF_SetFontsize refuses to cooperate with me, hence font_small
        this is TEMPORARY */
-    TTF_Font *font_small = TTF_OpenFont(game.settings.fontPath, FONT_SIZE/2);
+    TTF_Font *font_small = TTF_OpenFont(game.settings.fontPath, game.settings.fontSize/2);
     if (font == NULL || font_small == NULL) {
         fprintf(stderr, "Font error: %s\n", TTF_GetError());
         exit(EXIT_FAILURE);
@@ -226,16 +224,16 @@ int main(int argc, char **argv)
             }
         }
 
-        if (displayed_fontsize != FONT_SIZE) {
+        if (displayed_fontsize != game.settings.fontSize) {
             /* again, any attempt to use TTF_SetFontSize results in broken rendering */
-            font = TTF_OpenFont(game.settings.fontPath, FONT_SIZE);
-            font_small = TTF_OpenFont(game.settings.fontPath, FONT_SIZE/2);
+            font = TTF_OpenFont(game.settings.fontPath, game.settings.fontSize);
+            font_small = TTF_OpenFont(game.settings.fontPath, game.settings.fontSize/2);
             if (font == NULL || font_small == NULL) {
                 fprintf(stderr, "Font error: %s\n", TTF_GetError());
                 exit(EXIT_FAILURE);
             }
 
-            displayed_fontsize = FONT_SIZE;
+            displayed_fontsize = game.settings.fontSize;
         }
 
 

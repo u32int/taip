@@ -72,7 +72,7 @@ void parse_config(game_t *game, const char *configFilePath)
                                                        TIMEMODESECONDS_MIN,
                                                        TIMEMODESECONDS_MAX);
         } else if (parse_opt("fontSize", buff, rvalue_buff)) {
-            FONT_SIZE = clamp_int(strtoimax(rvalue_buff, NULL, 10),
+            game->settings.fontSize = clamp_int(strtoimax(rvalue_buff, NULL, 10),
                                   FONT_SIZE_MIN, FONT_SIZE_MAX);
         } else if (parse_opt("wordsPerLine", buff, rvalue_buff)) {
             game->settings.wordsPerLine = clamp_int(strtoimax(rvalue_buff, NULL, 10),

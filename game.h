@@ -127,6 +127,7 @@ typedef struct {
 } VisibleSetting;
 
 typedef struct {
+    int fontSize;
     bool showHints;
     bool focusMode;
     bool punctuation;

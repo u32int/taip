@@ -13,7 +13,8 @@ void init_game(game_t *game)
 {
     /* default settings */
     game->mode = Time;
-    
+
+    game->settings.fontSize = 44;
     game->settings.timeModeSeconds = 30;
     game->settings.wordModeWords = 50;
     game->settings.showHints = true;
@@ -47,6 +48,7 @@ void cycle_lines(game_t *game)
     for (int i = 0; i < TEXT_LINES-1; ++i) {
         strcpy(game->txtBuff[i], game->txtBuff[i+1]);
     }
+
     game->stats.totalCharCount += game->lineLen;
 
     game->lineLen = strlen(game->txtBuff[0]);

@@ -9,7 +9,7 @@ PKG_SEARCH_MODULE(SDL2GFX REQUIRED SDL2_gfx)
 
 INCLUDE_DIRECTORIES(${SDL2_INCLUDE_DIRS} ${SDL2TTF_INCLUDE_DIRS})
 
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -std=c11 -pedantic -g -lm")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -std=c11 -pedantic -g")
 
 set(SRCS
   main.c
@@ -30,7 +30,7 @@ set(HEADERS
 
 add_executable(taip ${SRCS} ${HEADERS})
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-    target_link_libraries(taip ${SDL2_LIBRARIES} ${SDL2TTF_LIBRARIES} ${SDL2GFX_LIBRARIES})
+    target_link_libraries(taip ${SDL2_LIBRARIES} ${SDL2TTF_LIBRARIES} ${SDL2GFX_LIBRARIES} -lm)
 elseif(CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
     target_link_libraries(taip -L/usr/local/lib ${SDL2_LIBRARIES} ${SDL2TTF_LIBRARIES} ${SDL2GFX_LIBRARIES})
 endif()
